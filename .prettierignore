@@ -1,0 +1,8 @@
+node_modules
+dist
+
+##TODO: more rules
+#Tailwind class sorting
+#TypeScript-strict rules
+#Husky + lint-staged (format before commit)
+#Minimal Prettier-only setup (no ESLint formatting)
