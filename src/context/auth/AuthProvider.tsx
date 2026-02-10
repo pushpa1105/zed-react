@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     useEffect(() => {
-        if (location.pathname === "/login") {
+        if (["/login", "/register"].includes(location.pathname)) {
             setAppLoading(false)
             return
         }
