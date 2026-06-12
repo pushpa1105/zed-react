@@ -20,4 +20,5 @@ export const AuthUserSchema = z.object({
     email: z.email(),
     name: z.string(),
     role: z.enum(['admin', 'user']),
+    activeWorkspace: z.string(),
 })

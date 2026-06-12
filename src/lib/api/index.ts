@@ -1,3 +1,4 @@
+import { ROUTES } from '@/constants';
 import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 
 const api = axios.create({
@@ -76,10 +77,10 @@ api.interceptors.response.use(
 const handleAuthRefresh = async (error: AxiosError) => {
   const originalRequest = error.config as InternalAxiosRequestConfig & { _retry: boolean };
 
-  if (originalRequest?._retry || originalRequest.url?.includes("/login")) return Promise.reject(error)
+  if (originalRequest?._retry || originalRequest.url?.includes(ROUTES.LOGIN)) return Promise.reject(error)
 
   if (originalRequest.url?.includes("/auth/refresh")) {
-    window.location.href = "/login";
+    window.location.href = ROUTES.LOGIN;
     return Promise.reject(error);
   }
 
@@ -103,7 +104,7 @@ const handleAuthRefresh = async (error: AxiosError) => {
     return api(originalRequest);
   } catch (err) {
     processQueue(err);
-    window.location.href = "/login";
+    window.location.href = ROUTES.LOGIN;
   } finally {
     isHandlingAuthRefresh = false
   }
