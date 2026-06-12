@@ -8,6 +8,12 @@ import { GuestRoute } from '@/lib/auth/GuestRoute'
 import Demo from '@/pages/demo'
 import { AuthProvider } from '@/context/auth/AuthProvider'
 import NotFound from '@/pages/not-found'
+import TestPage from '@/pages/test'
+import RegisterPage from '@/pages/auth/register'
+import { WorkspaceProvider } from '@/context/workspace/WorkspaceProvider'
+import CreateWorkspacePage from '@/pages/workspaces/create'
+import { ROUTES } from '@/constants'
+
 
 function App() {
 
@@ -15,19 +21,29 @@ function App() {
     <>
       <Router>
         <AuthProvider>
-          <Routes>
-            <Route element={<MainLayout />}>
-              <Route element={<ProtectedRoute />} >
-                <Route path='/' element={<Demo />} />
+          <WorkspaceProvider>
+            <Routes>
+              <Route element={<MainLayout />}>
+                <Route element={<ProtectedRoute />} >
+                  <Route path={ROUTES.ROOT} element={<Demo />} />
+
+                  {/* Workspace Section --- BEGIN ---*/}
+                  <Route path={ROUTES.CREATE_WORKSPACE} element={<CreateWorkspacePage />} />
+                  {/* Workspace Section --- END ---*/}
+
+                </Route>
+
+                <Route element={<GuestRoute />} >
+                  <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+                  <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+                </Route>
               </Route>
 
-              <Route element={<GuestRoute />} >
-                <Route path='/login' element={<LoginPage />} />
-              </Route>
-            </Route>
+              <Route path="/test" element={<TestPage />} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </WorkspaceProvider>
         </AuthProvider>
       </Router>
     </>

@@ -5,6 +5,7 @@ import { useLoader } from "@/hooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { AuthUserType, LoginFormType } from "@/types";
 import { withAsyncHandler } from "@/utils/withAsyncHandler";
+import { ROUTES } from "@/constants";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [currentUser, setCurrentUser] = useState(null);
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             {
                 onSuccess: () => {
                     clearAuthInfo()
-                    navigate('/login')
+                    navigate(ROUTES.LOGIN)
                 }
             }
         )
@@ -47,7 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     useEffect(() => {
-        if (["/login", "/register"].includes(location.pathname)) {
+        if ([ROUTES.LOGIN, ROUTES.REGISTER].includes(location.pathname)) {
             setAppLoading(false)
             return
         }

@@ -25,6 +25,7 @@ export const withAsyncHandler = async <T>(
     try {
         if (showLoader) setGlobalLoading(true)
         const res = await asyncFn();
+        toast.success(res?.data?.message || 'Success')
         onSuccess?.(res)
     } catch (err: any) {
         if (onError) {

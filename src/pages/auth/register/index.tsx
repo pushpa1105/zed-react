@@ -17,6 +17,7 @@ import type { RegisterFormType } from "@/types";
 import { withAsyncHandler } from "@/utils/withAsyncHandler";
 import { register } from "@/services";
 import { toast } from "sonner";
+import { ROUTES } from "@/constants";
 
 const RegisterPage = () => {
     const navigate = useNavigate()
@@ -27,7 +28,7 @@ const RegisterPage = () => {
             {
                 onSuccess: (res) => {
                     toast.success(res?.data?.message)
-                    navigate('/login')
+                    navigate(ROUTES.LOGIN)
                 }
             }
         )
@@ -183,7 +184,7 @@ const RegisterPage = () => {
                         </Button>
                         <div className="text-muted-foreground text-sm">
                             Already have an account?
-                            <Link to={"/login"} className="ms-2 underline">Sign In</Link>
+                            <Link to={ROUTES.LOGIN} className="ms-2 underline">Sign In</Link>
                         </div>
                     </CardFooter>
                 </Card>
