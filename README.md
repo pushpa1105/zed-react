@@ -1,73 +1,85 @@
-# React + TypeScript + Vite
+# Zed React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Notion-inspired workspace app prototype built with React, TypeScript, Vite, and Editor.js.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is a starting point for building a Notion-like productivity application. It includes:
 
-## React Compiler
+- workspace creation and management
+- authentication flow with protected guest routes
+- a sidebar-first layout
+- block-style rich text editing using Editor.js
+- modern UI primitives with Tailwind and Radix
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- `Auth`: login, register, guest access, and protected pages
+- `Workspace`: create and select workspaces for personal or team use
+- `Editor`: rich content editor with headers, paragraphs, lists, quotes, and code blocks
+- `Layout`: responsive sidebar, breadcrumb navigation, and dashboard-style content area
+- `State`: Redux Toolkit, React context, and form handling with `@tanstack/react-form`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React 19 + TypeScript
+- Vite
+- Tailwind CSS
+- Radix UI (within Shadcn)
+- Editor.js
+- React Router DOM
+- Redux Toolkit
+- Zod
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Getting started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Install dependencies and start the dev server:
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Then open the app at `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Available scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `npm run dev` — start the Vite development server
+- `npm run build` — build the app for production
+- `npm run preview` — preview the production build
+- `npm run lint` — run ESLint checks
+- `npm run format` — format files with Prettier
+- `npm run format:check` — check formatting
+
+## Project structure
+
+- `src/App.tsx` — application routes and layout composition
+- `src/main.tsx` — entry point with store and providers
+- `src/pages` — route pages for demo, auth, workspace creation, and fallback
+- `src/components` — reusable UI components and editor integration
+- `src/context` — auth, workspace, and loader providers
+- `src/lib` — route guards, store setup, and utilities
+- `src/services` — API/service calls for auth and workspace management
+- `src/schemas` — validation schemas with Zod
+- `src/hooks` — shared hooks for auth, workspace, and loader state
+
+## Notes
+
+- The `Demo` page currently provides a placeholder dashboard layout.
+- The editor is implemented in `src/components/editor/DefaultEditor.tsx` using Editor.js.
+- Workspace creation is handled in `src/pages/workspaces/create/index.tsx`.
+- Protected routing is managed by `src/lib/auth/ProtectedRoute.tsx` and `src/lib/auth/GuestRoute.tsx`.
+
+## Next improvements
+
+Possible next steps for the Notion-like experience:
+
+- add document/page creation and navigation
+- save editor content to backend or local storage
+- improve editor toolset and toolbar controls
+- add workspace/team collaboration features
+- add drag-and-drop page and block ordering
+
+---
+
+Built as a minimal React/TypeScript app for a Notion-style content workspace.
