@@ -13,6 +13,7 @@ import RegisterPage from '@/pages/auth/register'
 import { WorkspaceProvider } from '@/context/workspace/WorkspaceProvider'
 import CreateWorkspacePage from '@/pages/workspaces/create'
 import { ROUTES } from '@/constants'
+import Op from '@/pages/op'
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
               </Route>
 
               <Route path="/test" element={<TestPage />} />
+              <Route path="/test2" element={<Op />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -27,6 +27,7 @@ export const withAsyncHandler = async <T>(
         const res = await asyncFn();
         toast.success(res?.data?.message || 'Success')
         onSuccess?.(res)
+        return res?.data
     } catch (err: any) {
         if (onError) {
             onError(err)

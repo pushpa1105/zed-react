@@ -23,18 +23,22 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { useWorkspace } from "@/hooks"
-import type { PanaType } from "@/types"
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
+import { useEffect } from "react"
+import { addPana, deletePana, fetchRootPanas, togglePana } from "@/lib/store/features/pana/panaSlice"
+import { selectChildPanasById, selectRootPanas } from "@/lib/store/features/pana/panaSelector"
 
 interface PanaItemProps {
-    panas: (PanaType & { isOpen?: boolean })[],
-    handleToggle: (id: string) => void,
+    parentId?: string,
     handleAddPage: (id?: string) => void
     handleDeletePana: (id: string) => void
 }
 
-const PanaItem = ({ panas, handleToggle, handleAddPage, handleDeletePana }: PanaItemProps) => {
+const PanaItem = ({ parentId, handleAddPage, handleDeletePana }: PanaItemProps) => {
     const { isMobile } = useSidebar()
+    const dispatch = useAppDispatch()
+
+    const panas = useAppSelector(parentId ? selectChildPanasById(parentId) : selectRootPanas)
 
     if (panas?.length === 0) return <SidebarMenuItem className="text-xs text-muted-foreground">No pages inside</SidebarMenuItem>
 
@@ -42,7 +46,7 @@ const PanaItem = ({ panas, handleToggle, handleAddPage, handleDeletePana }: Pana
         e.preventDefault()
         e.stopPropagation()
 
-        handleToggle(id)
+        dispatch(togglePana(id))
     };
 
     return (
@@ -102,9 +106,8 @@ const PanaItem = ({ panas, handleToggle, handleAddPage, handleDeletePana }: Pana
                     item?.isOpen && (
                         <div className="pl-4">
                             <PanaItem
-                                panas={item?.children || []} key={item._id}
+                                parentId={item._id} key={item._id}
                                 handleAddPage={handleAddPage}
-                                handleToggle={handleToggle}
                                 handleDeletePana={handleDeletePana}
                             />
                         </div>
@@ -117,7 +120,14 @@ const PanaItem = ({ panas, handleToggle, handleAddPage, handleDeletePana }: Pana
 }
 
 export function NavProjects() {
-    const { panas, addPage, togglePana, removePana } = useWorkspace()
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(fetchRootPanas())
+    }, [dispatch])
+
+    const handleAddPana = (parentId?: string) => dispatch(addPana(parentId))
+    const removePana = (panaId: string) => dispatch(deletePana(panaId))
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -126,7 +136,7 @@ export function NavProjects() {
                 <SidebarMenuAction showOnHover>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Plus onClick={() => addPage()} />
+                            <Plus onClick={() => handleAddPana()} />
                         </TooltipTrigger>
                         <TooltipContent>
                             Add a page
@@ -136,9 +146,7 @@ export function NavProjects() {
             </SidebarMenuItem>
             <SidebarMenu>
                 <PanaItem
-                    panas={panas}
-                    handleToggle={togglePana}
-                    handleAddPage={(id) => addPage(undefined, id)}
+                    handleAddPage={handleAddPana}
                     handleDeletePana={removePana}
                 />
             </SidebarMenu>
