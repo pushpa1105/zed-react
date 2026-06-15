@@ -12,5 +12,6 @@ export const PanaSchema = z.object({
     workspaceId: z.string(),
     isOpen: z.boolean().optional(),
     hasChildrenFetched: z.boolean().optional(),
-    children: z.array(SimplePanaSchema).optional()
+    children: z.array(SimplePanaSchema).optional(),
+    childrenIds: z.array(z.string()).optional()
 })
