@@ -5,7 +5,6 @@ import MainLayout from '@/layouts/MainLayout'
 import { ProtectedRoute } from '@/lib/auth/ProtectedRoute'
 import LoginPage from '@/pages/auth/login'
 import { GuestRoute } from '@/lib/auth/GuestRoute'
-import Demo from '@/pages/demo'
 import { AuthProvider } from '@/context/auth/AuthProvider'
 import NotFound from '@/pages/not-found'
 import TestPage from '@/pages/test'
@@ -14,6 +13,8 @@ import { WorkspaceProvider } from '@/context/workspace/WorkspaceProvider'
 import CreateWorkspacePage from '@/pages/workspaces/create'
 import { ROUTES } from '@/constants'
 import Op from '@/pages/op'
+import Dashboard from '@/pages/dashboard'
+import WorkspaceLayout from '@/layouts/WorkspaceLayout'
 
 
 function App() {
@@ -26,8 +27,9 @@ function App() {
             <Routes>
               <Route element={<MainLayout />}>
                 <Route element={<ProtectedRoute />} >
-                  <Route path={ROUTES.ROOT} element={<Demo />} />
-
+                  <Route element={<WorkspaceLayout />} >
+                    <Route path={ROUTES.ROOT} element={<Dashboard />} />
+                  </Route>
                   {/* Workspace Section --- BEGIN ---*/}
                   <Route path={ROUTES.CREATE_WORKSPACE} element={<CreateWorkspacePage />} />
                   {/* Workspace Section --- END ---*/}
