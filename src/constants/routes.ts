@@ -32,7 +32,8 @@ export const ROUTES = {
      * Workspace Sections
      * ---BEGIN---
      */
-    CREATE_WORKSPACE: `${WORKSPACE_PREFIX}/create`
+    CREATE_WORKSPACE: `${WORKSPACE_PREFIX}/create`,
+    PANA: `/:panaId`
 
     /**
      * Workspace Sections

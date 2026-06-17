@@ -15,6 +15,7 @@ import { ROUTES } from '@/constants'
 import Op from '@/pages/op'
 import Dashboard from '@/pages/dashboard'
 import WorkspaceLayout from '@/layouts/WorkspaceLayout'
+import Pana from '@/pages/pana'
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                 <Route element={<ProtectedRoute />} >
                   <Route element={<WorkspaceLayout />} >
                     <Route path={ROUTES.ROOT} element={<Dashboard />} />
+                    <Route path={ROUTES.PANA} element={<Pana />} />
                   </Route>
                   {/* Workspace Section --- BEGIN ---*/}
                   <Route path={ROUTES.CREATE_WORKSPACE} element={<CreateWorkspacePage />} />

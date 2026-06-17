@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 clearAuthInfo()
             })
             .finally(() => setAppLoading(false))
-    }, [setCurrentUser, setAppLoading, location])
+    }, [])
 
     return (
         <AuthContext.Provider value={{ currentUser, setCurrentUser, signOut, signIn }}>
