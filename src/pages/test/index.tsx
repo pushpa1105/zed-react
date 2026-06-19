@@ -1,20 +1,30 @@
-import { useState } from 'react'
-import type { OutputData } from '@editorjs/editorjs'
-import DefaultEditor from '@/components/editor/DefaultEditor'
+import { Button } from "@/components/ui/button";
+import useModal from "@/hooks/useModal";
 
-export default function TestPage() {
-    const [data, setData] = useState<OutputData | undefined>()
+const TestPage = () => {
+
+    const { modal, showModal } = useModal()
+
+    const handleOpenDialog = () => {
+        showModal({
+            title: 'Test ONe',
+            description: 'MEMMEME',
+            content: <div>
+            </div>,
+            onSubmit: () => {
+                console.log('djhsdhjsd')
+            }
+        })
+    }
 
     return (
-        <div className="max-w-3xl mx-auto">
-            <DefaultEditor
-                initialData={data}
-                onChange={(content) => setData(content)}
-            />
-
-            <pre className="mt-6 bg-gray-100 p-4 rounded">
-                {JSON.stringify(data, null, 2)}
-            </pre>
-        </div>
-    )
+        <>
+            <Button onClick={handleOpenDialog}>
+                Click Me
+            </Button>
+            {modal}
+        </>
+    );
 }
+
+export default TestPage;

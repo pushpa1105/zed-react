@@ -1,7 +1,7 @@
 const Pana = () => {
     return (
         <div>
-            Test
+            Pana Page
         </div>
     )
 }
