@@ -1,0 +1,130 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+import type { EditorThemeClasses } from 'lexical';
+
+import './ZeditorTheme.css';
+
+const theme: EditorThemeClasses = {
+  autocomplete: 'Zeditor__autocomplete',
+  blockCursor: 'Zeditor__blockCursor',
+  characterLimit: 'Zeditor__characterLimit',
+  code: 'Zeditor__code',
+  codeHighlight: {
+    atrule: 'Zeditor__tokenAttr',
+    attr: 'Zeditor__tokenAttr',
+    boolean: 'Zeditor__tokenProperty',
+    builtin: 'Zeditor__tokenSelector',
+    cdata: 'Zeditor__tokenComment',
+    char: 'Zeditor__tokenSelector',
+    class: 'Zeditor__tokenFunction',
+    'class-name': 'Zeditor__tokenFunction',
+    comment: 'Zeditor__tokenComment',
+    constant: 'Zeditor__tokenProperty',
+    deleted: 'Zeditor__tokenDeleted',
+    doctype: 'Zeditor__tokenComment',
+    entity: 'Zeditor__tokenOperator',
+    function: 'Zeditor__tokenFunction',
+    important: 'Zeditor__tokenVariable',
+    inserted: 'Zeditor__tokenInserted',
+    keyword: 'Zeditor__tokenAttr',
+    namespace: 'Zeditor__tokenVariable',
+    number: 'Zeditor__tokenProperty',
+    operator: 'Zeditor__tokenOperator',
+    prolog: 'Zeditor__tokenComment',
+    property: 'Zeditor__tokenProperty',
+    punctuation: 'Zeditor__tokenPunctuation',
+    regex: 'Zeditor__tokenVariable',
+    selector: 'Zeditor__tokenSelector',
+    string: 'Zeditor__tokenSelector',
+    symbol: 'Zeditor__tokenProperty',
+    tag: 'Zeditor__tokenProperty',
+    unchanged: 'Zeditor__tokenUnchanged',
+    url: 'Zeditor__tokenOperator',
+    variable: 'Zeditor__tokenVariable',
+  },
+  embedBlock: {
+    base: 'Zeditor__embedBlock',
+    focus: 'Zeditor__embedBlockFocus',
+  },
+  hashtag: 'Zeditor__hashtag',
+  heading: {
+    h1: 'Zeditor__h1',
+    h2: 'Zeditor__h2',
+    h3: 'Zeditor__h3',
+    h4: 'Zeditor__h4',
+    h5: 'Zeditor__h5',
+    h6: 'Zeditor__h6',
+  },
+  hr: 'Zeditor__hr',
+  hrSelected: 'Zeditor__hrSelected',
+  image: 'editor-image',
+  indent: 'Zeditor__indent',
+  layoutContainer: 'Zeditor__layoutContainer',
+  layoutItem: 'Zeditor__layoutItem',
+  link: 'Zeditor__link',
+  list: {
+    checklist: 'Zeditor__checklist',
+    listitem: 'Zeditor__listItem',
+    listitemChecked: 'Zeditor__listItemChecked',
+    listitemUnchecked: 'Zeditor__listItemUnchecked',
+    nested: {
+      listitem: 'Zeditor__nestedListItem',
+    },
+    olDepth: [
+      'Zeditor__ol1',
+      'Zeditor__ol2',
+      'Zeditor__ol3',
+      'Zeditor__ol4',
+      'Zeditor__ol5',
+    ],
+    ul: 'Zeditor__ul',
+  },
+  mark: 'Zeditor__mark',
+  markOverlap: 'Zeditor__markOverlap',
+  paragraph: 'Zeditor__paragraph',
+  quote: 'Zeditor__quote',
+  specialText: 'Zeditor__specialText',
+  tab: 'Zeditor__tabNode',
+  table: 'Zeditor__table',
+  tableAddColumns: 'Zeditor__tableAddColumns',
+  tableAddRows: 'Zeditor__tableAddRows',
+  tableAlignment: {
+    center: 'Zeditor__tableAlignmentCenter',
+    right: 'Zeditor__tableAlignmentRight',
+  },
+  tableCell: 'Zeditor__tableCell',
+  tableCellActionButton: 'Zeditor__tableCellActionButton',
+  tableCellActionButtonContainer:
+    'Zeditor__tableCellActionButtonContainer',
+  tableCellHeader: 'Zeditor__tableCellHeader',
+  tableCellResizer: 'Zeditor__tableCellResizer',
+  tableCellSelected: 'Zeditor__tableCellSelected',
+  tableFrozenColumn: 'Zeditor__tableFrozenColumn',
+  tableFrozenRow: 'Zeditor__tableFrozenRow',
+  tableRowStriping: 'Zeditor__tableRowStriping',
+  tableScrollableWrapper: 'Zeditor__tableScrollableWrapper',
+  tableSelected: 'Zeditor__tableSelected',
+  tableSelection: 'Zeditor__tableSelection',
+  text: {
+    bold: 'Zeditor__textBold',
+    capitalize: 'Zeditor__textCapitalize',
+    code: 'Zeditor__textCode',
+    highlight: 'Zeditor__textHighlight',
+    italic: 'Zeditor__textItalic',
+    lowercase: 'Zeditor__textLowercase',
+    strikethrough: 'Zeditor__textStrikethrough',
+    subscript: 'Zeditor__textSubscript',
+    superscript: 'Zeditor__textSuperscript',
+    underline: 'Zeditor__textUnderline',
+    underlineStrikethrough: 'Zeditor__textUnderlineStrikethrough',
+    uppercase: 'Zeditor__textUppercase',
+  },
+};
+
+export default theme;
