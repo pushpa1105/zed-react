@@ -1,9 +1,7 @@
-import Zeditor from "@/lib/zeditor/Zeditor";
+import Zeditor from "@/lib/zeditor";
 
 export default function Op() {
     return (
-        <div className="border m-4">
-            <Zeditor />
-        </div>
+        <Zeditor onChange={() => { }} initialBlocks={[]} />
     )
 }

@@ -1,9 +1,10 @@
-import type { JSX, ReactNode } from 'react';
+import type { JSX } from 'react';
 
 import { calculateZoomLevel } from '@lexical/utils';
 import { isDOMNode } from 'lexical';
 import * as React from 'react';
 import {
+    type ReactNode,
     useCallback,
     useEffect,
     useMemo,
@@ -159,6 +160,7 @@ export default function DropDown({
     children,
     stopCloseOnClickSelf,
     hideChevron,
+    onOpenChange,
 }: {
     disabled?: boolean;
     buttonAriaLabel?: string;
@@ -168,6 +170,7 @@ export default function DropDown({
     children: ReactNode;
     stopCloseOnClickSelf?: boolean;
     hideChevron?: boolean;
+    onOpenChange?: (open: boolean) => void
 }): JSX.Element {
     const dropDownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -180,6 +183,10 @@ export default function DropDown({
             buttonRef.current.focus();
         }
     };
+
+    useEffect(() => {
+        onOpenChange?.(showDropDown);
+    }, [showDropDown, onOpenChange]);
 
     useEffect(() => {
         const button = buttonRef.current;

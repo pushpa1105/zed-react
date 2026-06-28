@@ -10,10 +10,24 @@ import { useEffect, useState } from 'react';
 import ContentEditable from '@/lib/zeditor/ui/ContentEditable';
 import { useSettings } from '@/lib/zeditor/hooks';
 import DraggableBlockPlugin from '@/lib/zeditor/plugins/DraggablePlugin';
+import BlockSyncPlugin from '@/lib/zeditor/plugins/BlockSyncPlugin';
+import BlockIdPlugin from '@/lib/zeditor/plugins/BlockIdPlugin';
+import type { Block } from '@/lib/zeditor/types';
+import { LoadBlocksPlugin } from '@/lib/zeditor/plugins/LoadBlocksPlugin';
+import CodeActionMenuPlugin from '@/lib/zeditor/plugins/CodeActionMenuPlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
 const placeholder = 'Enter some rich text...';
 
-export default function ZeditorInner() {
+interface ZeditorInnerProps {
+    initialBlocks: Block[],
+    onChange: (_: any) => void
+}
+
+export default function ZeditorInner({
+    onChange: syncChange,
+    initialBlocks,
+}: ZeditorInnerProps) {
     const {
         settings: {
             isRichText,
@@ -21,6 +35,14 @@ export default function ZeditorInner() {
     } = useSettings();
     const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
     const [isSmallWidthViewport, setIsSmallWidthViewport] = useState<boolean>(false);
+    const [blocks, setBlocks] = useState<Block[] | null>(null);
+    const [editor] = useLexicalComposerContext();
+    const [activeEditor, setActiveEditor] = useState(editor);
+    const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
+
+    useEffect(() => {
+        setBlocks(initialBlocks)
+    }, [initialBlocks])
 
     const onRef = (_floatingAnchorElem: HTMLDivElement) => {
         if (_floatingAnchorElem !== null) {
@@ -46,11 +68,16 @@ export default function ZeditorInner() {
     }, [isSmallWidthViewport]);
 
     const onChange = (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
-        console.log(editorState.toJSON())
+        // console.log(editorState.toJSON())
     }
     return (
         <div className="editor-container">
-            <ToolbarPlugin />
+            <ToolbarPlugin
+                editor={editor}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
+                setIsLinkEditMode={setIsLinkEditMode}
+            />
             <div className="editor-inner">
                 {isRichText ? (
                     <>
@@ -62,6 +89,8 @@ export default function ZeditorInner() {
                         {floatingAnchorElem && !isSmallWidthViewport && (
                             <>
                                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                                <CodeActionMenuPlugin anchorElem={floatingAnchorElem} activeEditor={activeEditor} />
+
                                 {/* <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
                                         <TableHoverActionsV2Plugin anchorElem={floatingAnchorElem} />
                                         <FloatingTextFormatToolbarPlugin
@@ -77,6 +106,18 @@ export default function ZeditorInner() {
                 )}
 
                 <OnChangePlugin onChange={onChange} />
+                <BlockIdPlugin initialBlocks={blocks}>
+                    {(idMapRef) => (
+                        <BlockSyncPlugin
+                            pageId={'122'}
+                            idMapRef={idMapRef}
+                            onChange={syncChange}
+                        />
+                    )}
+                </BlockIdPlugin>
+                {blocks?.length &&
+                    <LoadBlocksPlugin blocks={blocks || []} />
+                }
             </div>
         </div>
     );

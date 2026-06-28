@@ -35,6 +35,8 @@ import ZeditorTheme from '@/lib/zeditor/themes/ZeditorTheme';
 import ZeditorInner from '@/lib/zeditor/ZeditorInner';
 import { ZeditorNodes } from '@/lib/zeditor/nodes';
 import { validateUrl } from '@/lib/zeditor/utils'
+import type { Block } from '@/lib/zeditor/types';
+import { CodeHighlightExtension } from '@/lib/zeditor/extensions/CodeHighlightExtension';
 
 // These are only enabled for rich-text mode
 const PlaygroundRichTextExtension = defineExtension({
@@ -50,6 +52,7 @@ const PlaygroundRichTextExtension = defineExtension({
         // tracks this node set automatically (kept out of the always-on
         // PlaygroundImportExtension so plain-text mode doesn't pull in
         // RichTextExtension, which conflicts with PlainTextExtension).
+        CodeHighlightExtension,
 
         configExtension(ListExtension, {
             shouldPreserveNumbering: false,
@@ -120,7 +123,15 @@ function buildExtensionFromSettings(settings: DynamicSettings) {
     });
 }
 
-export default function Zeditor(): JSX.Element {
+interface ZeditorProps {
+    onChange: (_: any) => void,
+    initialBlocks: Block[],
+}
+
+export default function Zeditor({
+    onChange,
+    initialBlocks
+}: ZeditorProps): JSX.Element {
     const {
         settings: { isCollab, emptyEditor, isRichText },
     } = useSettings();
@@ -139,7 +150,7 @@ export default function Zeditor(): JSX.Element {
             <LexicalExtensionComposer extension={app} contentEditable={null}>
                 <ToolbarProvider>
                     <div className="editor-shell">
-                        <ZeditorInner />
+                        <ZeditorInner onChange={onChange} initialBlocks={initialBlocks} />
                     </div>
                 </ToolbarProvider>
             </LexicalExtensionComposer>
