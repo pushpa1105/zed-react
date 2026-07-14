@@ -1,17 +1,10 @@
-import { createPana, deletePana, fetchActiveWorkspacePanasWithPagination } from "@/services"
+import { createPana, deletePana, fetchActiveWorkspacePanas } from "@/services"
 import type { PanaType } from "@/types"
 import { withAsyncHandler } from "@/utils/withAsyncHandler"
 
-interface FetchPanasAddons {
-    parentId?: string
-}
-
-export const fetchPanas = async (addons?: FetchPanasAddons): Promise<PanaType[]> => {
-    const resolvedAddons = {
-        params: addons
-    }
-    const res = await withAsyncHandler(() => fetchActiveWorkspacePanasWithPagination(resolvedAddons))
-    return res?.data?.data
+export const fetchPanas = async (): Promise<PanaType[]> => {
+    const res = await withAsyncHandler(fetchActiveWorkspacePanas)
+    return res?.data
 }
 
 export const addNewPana = async (parentId?: string) => {

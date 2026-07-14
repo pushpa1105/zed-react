@@ -27,6 +27,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
 import { useEffect } from "react"
 import { addPana, deletePana, fetchRootPanas, togglePana } from "@/lib/store/features/pana/panaSlice"
 import { selectChildPanasById, selectRootPanas } from "@/lib/store/features/pana/panaSelector"
+import { Link, useParams } from "react-router-dom"
 
 interface PanaItemProps {
     parentId?: string,
@@ -37,6 +38,7 @@ interface PanaItemProps {
 const PanaItem = ({ parentId, handleAddPage, handleDeletePana }: PanaItemProps) => {
     const { isMobile } = useSidebar()
     const dispatch = useAppDispatch()
+    const { id } = useParams()
 
     const panas = useAppSelector(parentId ? selectChildPanasById(parentId) : selectRootPanas)
 
@@ -52,9 +54,11 @@ const PanaItem = ({ parentId, handleAddPage, handleDeletePana }: PanaItemProps) 
     return (
         panas.map((item) => (
             <div key={item._id} >
-                <SidebarMenuItem className="group/item">
-                    <SidebarMenuButton asChild>
-                        <a href={item._id}>
+                <SidebarMenuItem className="group/item active">
+                    <SidebarMenuButton asChild
+                        isActive={id === item._id}
+                    >
+                        <Link to={`/${item._id}`}>
                             <div>
                                 <div className="group-hover/item:hidden border rounded border-transparent">
                                     <FileText className="group-hover/item:hidden" size={15} />
@@ -76,7 +80,7 @@ const PanaItem = ({ parentId, handleAddPage, handleDeletePana }: PanaItemProps) 
                                 </div>
                             </div>
                             <span>{item?.title ?? 'New Page'}</span>
-                        </a>
+                        </Link>
                     </SidebarMenuButton>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -119,12 +123,18 @@ const PanaItem = ({ parentId, handleAddPage, handleDeletePana }: PanaItemProps) 
     )
 }
 
-export function NavProjects() {
+export function NavPanas() {
+    const { id } = useParams()
     const dispatch = useAppDispatch()
 
+    const handlePanaListFetch = async () => {
+        await dispatch(fetchRootPanas())
+        if (id) dispatch(togglePana(id))
+    }
+
     useEffect(() => {
-        dispatch(fetchRootPanas())
-    }, [dispatch])
+        handlePanaListFetch()
+    }, [])
 
     const handleAddPana = (parentId?: string) => dispatch(addPana(parentId))
     const removePana = (panaId: string) => dispatch(deletePana(panaId))

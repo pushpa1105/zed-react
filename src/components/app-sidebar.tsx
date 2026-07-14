@@ -1,18 +1,4 @@
-"use client"
-
 import * as React from "react"
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
 
 import { NavUser } from "@/components/nav-user"
 import {
@@ -22,7 +8,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { NavProjects } from "@/components/nav-projects"
+import { NavPanas } from "@/components/nav-panas"
 import { useAuth } from "@/hooks"
 import { WorkspaceSwitcher } from "@/components/features/workspaces/workspace-switcher"
 
@@ -41,7 +27,7 @@ export const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) =
         <WorkspaceSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects />
+        <NavPanas />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

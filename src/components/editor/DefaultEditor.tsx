@@ -1,84 +1,43 @@
-import EditorJS, { type OutputData } from '@editorjs/editorjs';
-import { useEffect, useRef } from 'react';
+import type { Block } from "@blocknote/core";
+import "@blocknote/core/fonts/inter.css";
+import { useCreateBlockNote } from "@blocknote/react";
+import { BlockNoteView } from "@blocknote/shadcn";
+import "@blocknote/shadcn/style.css";
+import { useCallback } from "react";
 
-// tools
-import Header from '@editorjs/header'
-import List from '@editorjs/list'
-import Quote from '@editorjs/quote'
-import Code from '@editorjs/code'
-import Paragraph from '@editorjs/paragraph'
-
-const DEFAULT_INITIAL_DATA = {
-    "time": new Date().getTime(),
-    "blocks": [
-        {
-            "type": "header",
-            "data": {
-                "text": "This is my awesome editor!",
-                "level": 1
-            }
-        },
-    ]
+interface ZeditorProps {
+    initialContent: Block[],
+    onChange?: (_: Block[]) => void
 }
 
-interface DefaultEditorProps {
-    initialData?: OutputData,
-    onChange?: (data: OutputData) => void,
-    readOnly?: boolean
-}
+export default function Zeditor({ initialContent, onChange }: ZeditorProps) {
+    const editor = useCreateBlockNote({
+        initialContent:
+            initialContent && initialContent.length > 0
+                ? initialContent
+                : [
+                    {
+                        type: "paragraph",
+                        content: [],
+                    },
+                ],
+    });
 
-const DefaultEditor = ({
-    initialData,
-    onChange,
-    readOnly
-}: DefaultEditorProps) => {
+    const handleDocumentUpdate = useCallback(() => {
+        onChange?.(editor.document)
+    }, [editor, onChange])
 
-    const ejInstance = useRef<EditorJS & {
-        hasInitiated?: boolean
-    }>(null);
-
-    const initEditor = () => {
-        ejInstance.hasInitiated = true
-        const editor = new EditorJS({
-            holder: 'editorjs',
-            readOnly,
-            onReady: () => {
-                ejInstance.current = editor;
-            },
-            autofocus: true,
-            inlineToolbar: ['link', 'marker', 'bold', 'italic'],
-            tools: {
-                header: Header,
-                list: List,
-                quote: Quote,
-                code: Code,
-                paragraph: Paragraph
-            },
-            data: initialData || DEFAULT_INITIAL_DATA,
-            onChange: async () => {
-                const content = await editor.saver.save();
-
-                console.log(content);
-                onChange?.(content)
-            }
-        });
-    }
-
-    useEffect(() => {
-        if (ejInstance.current === null && !ejInstance?.hasInitiated) {
-            initEditor();
-        }
-
-        return () => {
-            ejInstance?.current?.destroy();
-            ejInstance.current = null;
-        };
-    }, []);
     return (
-
-        <div id='editorjs' className='bg-slate-100'>
-        </div>
-    )
+        <>
+            <BlockNoteView
+                editor={editor}
+                shadCNComponents={{
+                    // Pass modified ShadCN components from your project here.
+                    // Otherwise, the default ShadCN components will be used.
+                }}
+                onChange={handleDocumentUpdate}
+                theme="light"
+            />
+        </>
+    );
 }
-
-export default DefaultEditor;
