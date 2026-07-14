@@ -4,6 +4,7 @@ import { setGlobalLoading } from "@/utils/provider-bridges"
 type AsyncHandlerOptions = {
     showLoader?: boolean
     showErrorToast?: boolean
+    showSuccessToast?: boolean
     onSuccess?: (res: any) => void
     onError?: (err: any) => void
     onFinally?: () => void
@@ -16,6 +17,7 @@ export const withAsyncHandler = async <T>(
     const {
         showLoader = true,
         showErrorToast = true,
+        showSuccessToast = true,
         onSuccess,
         onError,
         onFinally,
@@ -25,7 +27,7 @@ export const withAsyncHandler = async <T>(
     try {
         if (showLoader) setGlobalLoading(true)
         const res = await asyncFn();
-        toast.success(res?.data?.message || 'Success')
+        if (showSuccessToast) toast.success(res?.data?.message || 'Success')
         onSuccess?.(res)
         return res?.data
     } catch (err: any) {

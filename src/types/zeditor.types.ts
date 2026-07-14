@@ -1,0 +1,1 @@
+export type ZeditorOperations = "update" | "move" | "insert" | "delete"

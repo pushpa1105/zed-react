@@ -10,8 +10,9 @@ export const PanaSchema = z.object({
     _id: z.string(),
     title: z.string(),
     workspaceId: z.string(),
+    parentId: z.string().nullable(),
     isOpen: z.boolean().optional(),
-    hasChildrenFetched: z.boolean().optional(),
+    hasChildrenAdded: z.boolean().optional(),
     children: z.array(SimplePanaSchema).optional(),
     childrenIds: z.array(z.string()).optional()
 })

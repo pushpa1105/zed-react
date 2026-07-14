@@ -5,17 +5,26 @@ export const buildPana = (pana: PanaType): PanaType => ({
     ...pana,
     children: [],
     childrenIds: [],
-    hasChildrenFetched: false,
+    hasChildrenAdded: false,
     isOpen: false,
 })
 
-export const normalizePanas = (panas: PanaType[]): NormalizePanas => {
+export const normalizePanas = (panas: PanaType[]): { normalizedData: NormalizePanas, rootIds: string[] } => {
     const normalizedData: NormalizePanas = {}
+    const rootIds: string[] = []
 
-    for (const pana of panas)
+    for (const pana of panas) {
         normalizedData[pana._id] = buildPana(pana)
 
-    return normalizedData
+        if (pana?.parentId) {
+            normalizedData[pana.parentId].childrenIds?.push(pana._id)
+            continue
+        }
+
+        rootIds.push(pana._id)
+    }
+
+    return { normalizedData, rootIds }
 }
 
 export const filterPanas = (panas: NormalizePanas, filterIds: string[]): PanaType[] => filterIds.map(panaId => panas[panaId]).filter(pana => !!pana)

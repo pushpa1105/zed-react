@@ -1,0 +1,146 @@
+import Zeditor from "@/components/editor/DefaultEditor";
+import type { BlockDocument, ZeditorOperations } from "@/types";
+import {
+    debounce,
+    withAsyncHandler,
+    parseToZeditorFormat,
+    findBlockContext,
+    flattenBlocks,
+    getOrderForBlock
+} from "@/utils";
+import type { Block } from "@blocknote/core";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { addOrUpdateBlocks, deleteBlocksById, fetchBlocksByPanaId } from "@/services"
+import { useParams } from "react-router-dom";
+
+interface BlockUpdateData {
+    type: ZeditorOperations;
+    data: Block
+}
+
+const Pana = () => {
+    const { id: panaId } = useParams()
+    const [blocks, setBlocks] = useState<Block[]>([])
+    const [isFetching, setIsFetching] = useState<boolean>(true)
+    const orderMapRef = useRef(new Map()); // blockId -> order string, seeded from initialContent
+
+    const prevFlatRef = useRef(flattenBlocks([], panaId!));
+
+    const syncToBackend = useMemo(
+        () =>
+            debounce(async (tree) => {
+                const prevFlat = prevFlatRef.current;
+                const prevMap = new Map(prevFlat.map((b) => [b.id, b]));
+
+                const newFlat = flattenBlocks(tree, panaId); // for content/type/props diffing
+                const newMap = new Map(newFlat.map((b) => [b.id, b]));
+
+                const upserts = [];
+                const deletes = [];
+
+                for (const [id, block] of newMap) {
+                    const old = prevMap.get(id);
+                    const ctx = findBlockContext(tree, id);
+                    const newParentId = ctx?.parentId;
+
+                    const contentChanged =
+                        !old ||
+                        JSON.stringify(old.content) !== JSON.stringify(block.content) ||
+                        JSON.stringify(old.props) !== JSON.stringify(block.props);
+
+                    const parentChanged = old && old.parentId !== newParentId;
+
+                    // did its position among siblings change?
+                    const siblingIds = ctx?.siblings.map((b) => b.id);
+                    const oldSiblingIds = prevFlat
+                        .filter((b) => b.parentId === old?.parentId)
+                        .map((b) => b.id);
+                    const positionChanged =
+                        !old || siblingIds?.indexOf(id) !== oldSiblingIds.indexOf(id) || parentChanged;
+
+                    if (contentChanged || positionChanged) {
+                        const order = positionChanged
+                            ? getOrderForBlock(tree, id, orderMapRef.current)
+                            : orderMapRef.current.get(id);
+
+                        upserts.push({
+                            id,
+                            panaId,
+                            parentId: newParentId,
+                            order,
+                            type: block.type,
+                            content: block.content,
+                            props: block.props,
+                        });
+                    }
+                }
+
+                for (const id of prevMap.keys()) {
+                    if (!newMap.has(id)) {
+                        deletes.push(id);
+                        orderMapRef.current.delete(id);
+                    }
+                }
+
+                if (upserts.length) {
+                    console.log('New Flat', newFlat)
+                    console.log('old Flat', prevFlatRef.current)
+                    console.log('upserts::', upserts)
+                    await withAsyncHandler(
+                        () => addOrUpdateBlocks(panaId, upserts),
+                        {
+                            showSuccessToast: false,
+                        }
+                    )
+                }
+
+                if (deletes.length) {
+                    console.log('delets::', deletes)
+                    await withAsyncHandler(
+                        () => deleteBlocksById(panaId, deletes),
+                        {
+                            showSuccessToast: false,
+                        }
+                    )
+                }
+
+                prevFlatRef.current = newFlat;
+            }, 5000
+            ), [panaId]
+    )
+    const handleChange = useCallback((updatedDocument: Block[]) => {
+        console.log('Updated Document-->', updatedDocument)
+        syncToBackend(updatedDocument);
+    }, [syncToBackend])
+
+
+    useEffect(() => {
+        if (!panaId) return
+        setIsFetching(true)
+        withAsyncHandler(
+            () => fetchBlocksByPanaId(panaId),
+            {
+                onSuccess: (res) => {
+                    const data = res?.data?.data as BlockDocument[]
+                    const parsedData = parseToZeditorFormat(data)
+                    setBlocks(parsedData)
+                    setIsFetching(false)
+                }
+            }
+        )
+    }, [panaId])
+
+    if (isFetching) {
+        return <div>fetching....</div>
+    }
+    return (
+        <div>
+            <Zeditor
+                initialContent={blocks}
+                onChange={handleChange}
+            />
+        </div>
+    )
+};
+
+export default Pana;

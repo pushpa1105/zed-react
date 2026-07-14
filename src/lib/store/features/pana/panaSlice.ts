@@ -1,9 +1,8 @@
-import type { RootState } from "@/lib/store";
 import { createAppSlice } from "@/lib/store/createAppSlice";
 import { addNewPana, fetchPanas, removePana } from "@/lib/store/features/pana/panaApi";
-import { buildPana, getPanaById, normalizePanas } from "@/lib/store/features/pana/utils";
+import { buildPana, normalizePanas } from "@/lib/store/features/pana/utils";
 import type { NormalizePanas, StoreStatus } from "@/lib/store/types";
-import { createPana } from "@/services";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface panaSliceState {
     status: StoreStatus | null,
@@ -27,54 +26,33 @@ export const panaSlice = createAppSlice({
                 pending: (state) => { state.status = 'loading' },
                 fulfilled: (state, action) => {
                     state.status = 'succeed';
-                    const data = normalizePanas(action.payload)
+                    const { normalizedData, rootIds } = normalizePanas(action.payload)
                     state.panas = {
                         ...state.panas,
-                        ...data,
+                        ...normalizedData,
                     }
 
                     state.rootPanasIds = [
                         ...new Set([
                             ...state.rootPanasIds,
-                            ...Object.keys(data),
+                            ...rootIds,
                         ])
                     ]
                 },
                 rejected: (state) => { state.status = 'failed' },
             }
         ),
-        togglePana: create.asyncThunk(
-            async (id: string, { getState }) => {
-                const panas = (getState() as RootState).pana.panas
-                const pana = getPanaById(panas, id)
+        togglePana: create.reducer((state, action: PayloadAction<string>) => {
+            let activePana;
+            let activePanaId: string = action.payload;
+            do {
+                activePana = state.panas[activePanaId]
+                state.panas[activePanaId].isOpen = !state.panas[activePanaId].isOpen
 
-                if (pana.hasChildrenFetched) {
-                    return { isRefetched: false, fetchedPanas: [] }
-                }
+                if (activePana?.parentId) activePanaId = activePana.parentId
+            } while (activePana.parentId)
 
-                return { isRefetched: true, fetchedPanas: await fetchPanas({ parentId: id }) }
-            },
-            {
-                pending: (state) => { state.status = 'loading' },
-                fulfilled: (state, action) => {
-                    state.status = 'succeed';
-                    const { isRefetched, fetchedPanas } = action.payload
-
-                    state.panas[action.meta.arg].isOpen = !state.panas[action.meta.arg].isOpen
-
-                    if (!isRefetched) return
-
-                    const data = normalizePanas(fetchedPanas)
-                    state.panas = {
-                        ...state.panas,
-                        ...data,
-                    }
-                    state.panas[action.meta.arg].childrenIds = Object.keys(data)
-                    state.panas[action.meta.arg].hasChildrenFetched = true
-                },
-                rejected: (state) => { state.status = 'failed' },
-            }
-        ),
+        }),
         addPana: create.asyncThunk(
             async (parentId?: string) => addNewPana(parentId),
             {
