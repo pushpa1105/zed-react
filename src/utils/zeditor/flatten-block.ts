@@ -1,7 +1,8 @@
+import type { UpdatedBlockInterface } from "@/types";
 import type { Block } from "@blocknote/core";
 
 export const flattenBlocks = (blocks: Block[], panaId: string, parentId?: string,) => {
-  const result: unknown[] = [];
+  const result: UpdatedBlockInterface[] = [];
 
   blocks.forEach((block, index) => {
     result.push({

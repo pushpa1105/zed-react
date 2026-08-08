@@ -47,10 +47,13 @@ export const panaSlice = createAppSlice({
             let activePanaId: string = action.payload;
             do {
                 activePana = state.panas[activePanaId]
-                state.panas[activePanaId].isOpen = !state.panas[activePanaId].isOpen
+                state.panas[activePanaId] = {
+                    ...state.panas[activePanaId],
+                    isOpen: !state?.panas?.[activePanaId]?.isOpen
+                }
 
                 if (activePana?.parentId) activePanaId = activePana.parentId
-            } while (activePana.parentId)
+            } while (activePana?.parentId)
 
         }),
         addPana: create.asyncThunk(
@@ -65,6 +68,13 @@ export const panaSlice = createAppSlice({
                     if (meta.arg) {
                         state.panas[meta.arg].childrenIds?.unshift(payload._id)
                         state.panas[meta.arg].isOpen = true
+                    } else {
+                        state.rootPanasIds = [
+                            ...new Set([
+                                ...state.rootPanasIds,
+                                payload._id,
+                            ])
+                        ]
                     }
                 },
                 rejected: (state) => { state.status = 'failed' },
