@@ -1,5 +1,5 @@
 import Zeditor from "@/components/editor/DefaultEditor";
-import type { BlockDocument, ZeditorOperations } from "@/types";
+import type { BlockDocument, UpdatedBlockInterface } from "@/types";
 import {
     debounce,
     withAsyncHandler,
@@ -13,11 +13,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { addOrUpdateBlocks, deleteBlocksById, fetchBlocksByPanaId } from "@/services"
 import { useParams } from "react-router-dom";
 
-interface BlockUpdateData {
-    type: ZeditorOperations;
-    data: Block
-}
-
 const Pana = () => {
     const { id: panaId } = useParams()
     const [blocks, setBlocks] = useState<Block[]>([])
@@ -26,97 +21,91 @@ const Pana = () => {
 
     const prevFlatRef = useRef(flattenBlocks([], panaId!));
 
-    const syncToBackend = useMemo(
-        () =>
-            debounce(async (tree) => {
-                const prevFlat = prevFlatRef.current;
-                const prevMap = new Map(prevFlat.map((b) => [b.id, b]));
+    const syncToBackend = useCallback(async (tree: Block[]) => {
+        if (!panaId) return
 
-                const newFlat = flattenBlocks(tree, panaId); // for content/type/props diffing
-                const newMap = new Map(newFlat.map((b) => [b.id, b]));
+        const prevFlat = prevFlatRef.current;
+        const prevMap = new Map(prevFlat.map((b) => [b.id, b]));
 
-                const upserts = [];
-                const deletes = [];
+        const newFlat = flattenBlocks(tree, panaId);
+        const newMap = new Map(newFlat.map((b) => [b.id, b]));
 
-                for (const [id, block] of newMap) {
-                    const old = prevMap.get(id);
-                    const ctx = findBlockContext(tree, id);
-                    const newParentId = ctx?.parentId;
+        const upserts: UpdatedBlockInterface[] = [];
+        const deletes: string[] = [];
 
-                    const contentChanged =
-                        !old ||
-                        JSON.stringify(old.content) !== JSON.stringify(block.content) ||
-                        JSON.stringify(old.props) !== JSON.stringify(block.props);
+        for (const [id, block] of newMap) {
+            const old = prevMap.get(id);
+            const ctx = findBlockContext(tree, id);
+            const newParentId = ctx?.parentId;
 
-                    const parentChanged = old && old.parentId !== newParentId;
+            const contentChanged =
+                !old ||
+                JSON.stringify(old.content) !== JSON.stringify(block.content) ||
+                JSON.stringify(old.props) !== JSON.stringify(block.props);
 
-                    // did its position among siblings change?
-                    const siblingIds = ctx?.siblings.map((b) => b.id);
-                    const oldSiblingIds = prevFlat
-                        .filter((b) => b.parentId === old?.parentId)
-                        .map((b) => b.id);
-                    const positionChanged =
-                        !old || siblingIds?.indexOf(id) !== oldSiblingIds.indexOf(id) || parentChanged;
+            const parentChanged = old && old.parentId !== newParentId;
 
-                    if (contentChanged || positionChanged) {
-                        const order = positionChanged
-                            ? getOrderForBlock(tree, id, orderMapRef.current)
-                            : orderMapRef.current.get(id);
+            // did its position among siblings change?
+            const siblingIds = ctx?.siblings.map((b) => b.id);
+            const oldSiblingIds = prevFlat
+                .filter((b) => b.parentId === old?.parentId)
+                .map((b) => b.id);
+            const positionChanged =
+                !old || siblingIds?.indexOf(id) !== oldSiblingIds.indexOf(id) || parentChanged;
 
-                        upserts.push({
-                            id,
-                            panaId,
-                            parentId: newParentId,
-                            order,
-                            type: block.type,
-                            content: block.content,
-                            props: block.props,
-                        });
-                    }
+            if (contentChanged || positionChanged) {
+                const order = positionChanged
+                    ? getOrderForBlock(tree, id, orderMapRef.current)
+                    : orderMapRef.current.get(id);
+
+                upserts.push({
+                    id,
+                    panaId,
+                    parentId: newParentId,
+                    order,
+                    type: block.type,
+                    content: block.content,
+                    props: block.props,
+                });
+            }
+        }
+
+        for (const id of prevMap.keys()) {
+            if (!newMap.has(id)) {
+                deletes.push(id);
+                orderMapRef.current.delete(id);
+            }
+        }
+
+        if (upserts.length) {
+            await withAsyncHandler(
+                () => addOrUpdateBlocks(panaId, upserts),
+                {
+                    showSuccessToast: false,
                 }
+            )
+        }
 
-                for (const id of prevMap.keys()) {
-                    if (!newMap.has(id)) {
-                        deletes.push(id);
-                        orderMapRef.current.delete(id);
-                    }
+        if (deletes.length) {
+            await withAsyncHandler(
+                () => deleteBlocksById(panaId, deletes),
+                {
+                    showSuccessToast: false,
                 }
+            )
+        }
 
-                if (upserts.length) {
-                    console.log('New Flat', newFlat)
-                    console.log('old Flat', prevFlatRef.current)
-                    console.log('upserts::', upserts)
-                    await withAsyncHandler(
-                        () => addOrUpdateBlocks(panaId, upserts),
-                        {
-                            showSuccessToast: false,
-                        }
-                    )
-                }
+        prevFlatRef.current = newFlat;
+    }, [panaId])
 
-                if (deletes.length) {
-                    console.log('delets::', deletes)
-                    await withAsyncHandler(
-                        () => deleteBlocksById(panaId, deletes),
-                        {
-                            showSuccessToast: false,
-                        }
-                    )
-                }
-
-                prevFlatRef.current = newFlat;
-            }, 5000
-            ), [panaId]
+    const handleChange = useMemo(
+        // eslint-disable-next-line react-hooks/refs
+        () => debounce((updatedDocument: Block[]) => syncToBackend(updatedDocument), 500),
+        [syncToBackend]
     )
-    const handleChange = useCallback((updatedDocument: Block[]) => {
-        console.log('Updated Document-->', updatedDocument)
-        syncToBackend(updatedDocument);
-    }, [syncToBackend])
-
 
     useEffect(() => {
         if (!panaId) return
-        setIsFetching(true)
         withAsyncHandler(
             () => fetchBlocksByPanaId(panaId),
             {
@@ -124,6 +113,8 @@ const Pana = () => {
                     const data = res?.data?.data as BlockDocument[]
                     const parsedData = parseToZeditorFormat(data)
                     setBlocks(parsedData)
+                    const newFlat = flattenBlocks(parsedData, panaId); // for content/type/props diffing
+                    prevFlatRef.current = newFlat;
                     setIsFetching(false)
                 }
             }
@@ -133,6 +124,8 @@ const Pana = () => {
     if (isFetching) {
         return <div>fetching....</div>
     }
+
+    console.log('After')
     return (
         <div>
             <Zeditor
