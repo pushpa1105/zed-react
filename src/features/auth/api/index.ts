@@ -1,8 +1,9 @@
 import api from '@/shared/lib/api';
 
-import type { RegisterFormType } from '../types';
+import type { LoginFormType, RegisterFormType } from '../types';
 
-export const login = async (data: any) => await api.post('/login', data);
+export const login = async (data: LoginFormType) =>
+  await api.post('/login', data);
 
 export const register = async (data: RegisterFormType) =>
   await api.post('/register', data);
