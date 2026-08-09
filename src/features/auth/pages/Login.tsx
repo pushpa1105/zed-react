@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -24,7 +23,6 @@ import { LoginFormSchema } from '../schema';
 
 const LoginPage = () => {
   const { signIn } = useAuth();
-  const navigate = useNavigate();
 
   const loginFormInstance = useForm({
     defaultValues: {
@@ -38,11 +36,6 @@ const LoginPage = () => {
     formId: 'loginForm',
   });
 
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-
-    if (isLoggedIn) navigate('/');
-  }, [navigate]);
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">

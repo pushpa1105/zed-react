@@ -19,6 +19,7 @@ import {
   fetchRootPanas,
   togglePana,
 } from '@/features/pana/store/panaSlice';
+import { useWorkspace } from '@/features/workspaces';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 
@@ -148,15 +149,22 @@ const PanaItem = ({
 export function NavPanas() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
+  const { activeWorkspace } = useWorkspace();
 
-  const handlePanaListFetch = useCallback(async () => {
-    await dispatch(fetchRootPanas());
-    if (id) dispatch(togglePana(id));
-  }, [id, dispatch]);
+  const handlePanaListFetch = useCallback(
+    async (workspaceId: string) => {
+      await dispatch(fetchRootPanas(workspaceId));
+      if (id) dispatch(togglePana(id));
+    },
+    [id, dispatch]
+  );
 
   useEffect(() => {
-    handlePanaListFetch();
-  }, [handlePanaListFetch]);
+    if (!activeWorkspace?._id) return;
+
+    handlePanaListFetch(activeWorkspace?._id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeWorkspace]);
 
   const handleAddPana = (parentId?: string) => dispatch(addPana(parentId));
   const removePana = (panaId: string) => dispatch(deletePana(panaId));

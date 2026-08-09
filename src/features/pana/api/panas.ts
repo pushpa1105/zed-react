@@ -1,7 +1,7 @@
 import api from '@/shared/lib/api';
 
-export const fetchActiveWorkspacePanas = async () =>
-  await api.get('/panas/current-workspace');
+export const fetchPanasByWorkspace = async (workspaceId: string) =>
+  await api.get(`/workspaces/${workspaceId}/panas`);
 
 export const createPana = async (title?: string, parentId?: string) =>
   await api.post('/panas/create', { title }, { params: { parentId } });
