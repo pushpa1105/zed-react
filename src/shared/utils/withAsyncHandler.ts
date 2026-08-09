@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from 'sonner';
 
 import { setGlobalLoading } from '../provider-bridges';
@@ -7,42 +6,29 @@ type ApiErrorResponse = {
   response?: {
     data?: {
       message?: string;
-      data?: {
-        data?: any;
-        [key: string]: any;
-      };
-      [key: string]: any;
     };
   };
   message?: string;
-  [key: string]: any;
 };
 
-type ApiErrorSuccess = {
-  data?: {
-    message?: string;
-    data?: {
-      data?: any;
-      [key: string]: any;
-    };
-    [key: string]: any;
-  };
-  message?: string;
-  [key: string]: any;
-};
-
-type AsyncHandlerOptions = {
+type AsyncHandlerOptions<T> = {
   showLoader?: boolean;
   showErrorToast?: boolean;
   showSuccessToast?: boolean;
-  onSuccess?: (res: ApiErrorSuccess) => void;
+  onSuccess?: (res: T) => void;
   onError?: (err: ApiErrorResponse) => void;
   onFinally?: () => void;
 };
 
-export const withAsyncHandler = async <T>(
+function isApiErrorResponse(err: unknown): err is ApiErrorResponse {
+  return typeof err === 'object' && err !== null;
+}
+
+export const withAsyncHandler = async <
+  T extends { data?: { message?: string } & Record<string, unknown> },
+>(
   asyncFn: () => Promise<T>,
-  options?: AsyncHandlerOptions
+  options?: AsyncHandlerOptions<T>
 ) => {
   const {
     showLoader = true,
@@ -59,11 +45,13 @@ export const withAsyncHandler = async <T>(
     if (showSuccessToast) toast.success(res?.data?.message || 'Success');
     onSuccess?.(res);
     return res?.data;
-  } catch (err: unknown) {
+  } catch (err) {
+    const typedErr = isApiErrorResponse(err) ? err : {};
+
     if (onError) {
-      onError(err as ApiErrorResponse);
+      onError(typedErr);
     } else if (showErrorToast) {
-      toast.error(err?.response?.data?.message || 'Something went wrong');
+      toast.error(typedErr?.response?.data?.message || 'Something went wrong');
     }
 
     throw err; // allows optional caller catch

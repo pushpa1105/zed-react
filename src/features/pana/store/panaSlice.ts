@@ -24,24 +24,28 @@ export const panaSlice = createAppSlice({
   name: 'pana',
   initialState,
   reducers: (create) => ({
-    fetchRootPanas: create.asyncThunk(async () => fetchPanas(), {
-      pending: (state) => {
-        state.status = 'loading';
-      },
-      fulfilled: (state, action) => {
-        state.status = 'succeed';
-        const { normalizedData, rootIds } = normalizePanas(action.payload);
-        state.panas = {
-          ...state.panas,
-          ...normalizedData,
-        };
+    fetchRootPanas: create.asyncThunk(
+      async (workspaceId: string) => fetchPanas(workspaceId),
+      {
+        pending: (state) => {
+          state.status = 'loading';
+        },
+        fulfilled: (state, action) => {
+          state.status = 'succeed';
+          const { normalizedData, rootIds } = normalizePanas(action.payload);
+          state.panas = {
+            ...normalizedData,
+          };
 
-        state.rootPanasIds = [...new Set([...state.rootPanasIds, ...rootIds])];
-      },
-      rejected: (state) => {
-        state.status = 'failed';
-      },
-    }),
+          state.rootPanasIds = [
+            ...new Set([...state.rootPanasIds, ...rootIds]),
+          ];
+        },
+        rejected: (state) => {
+          state.status = 'failed';
+        },
+      }
+    ),
     togglePana: create.reducer((state, action: PayloadAction<string>) => {
       let activePana;
       let activePanaId: string = action.payload;

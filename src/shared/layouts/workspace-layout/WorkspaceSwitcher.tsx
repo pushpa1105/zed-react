@@ -19,6 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/shared/components/ui/sidebar';
+import { ROUTES } from '@/shared/constants';
 import { withAsyncHandler } from '@/shared/utils';
 
 import { cn, extractInitials } from '../../utils';
@@ -32,13 +33,14 @@ export const WorkspaceSwitcher = () => {
     return null;
   }
 
-  const goToCreateWorkspace = () => {
-    navigate('/workspaces/create');
-  };
+  const goToCreateWorkspace = () => navigate(ROUTES.CREATE_WORKSPACE);
 
   const switchWorkspace = async (w: WorkspaceType) => {
     await withAsyncHandler(() => updateActiveWorkspace(w._id), {
-      onSuccess: () => setActiveWorkspace(w),
+      onSuccess: () => {
+        setActiveWorkspace(w);
+        navigate(ROUTES.ROOT);
+      },
     });
   };
 

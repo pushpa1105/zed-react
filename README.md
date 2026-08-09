@@ -1,85 +1,94 @@
 # Zed React
 
-A Notion-inspired workspace app prototype built with React, TypeScript, Vite, and Editor.js.
-
-## Overview
-
-This project is a starting point for building a Notion-like productivity application. It includes:
-
-- workspace creation and management
-- authentication flow with protected guest routes
-- a sidebar-first layout
-- block-style rich text editing using Editor.js
-- modern UI primitives with Tailwind and Radix
+Zed React is a Notion-inspired workspace application built with React, TypeScript, and Vite. It combines authenticated workspaces, a responsive workspace layout, and block-based document editing.
 
 ## Features
 
-- `Auth`: login, register, guest access, and protected pages
-- `Workspace`: create and select workspaces for personal or team use
-- `Editor`: rich content editor with headers, paragraphs, lists, quotes, and code blocks
-- `Layout`: responsive sidebar, breadcrumb navigation, and dashboard-style content area
-- `State`: Redux Toolkit, React context, and form handling with `@tanstack/react-form`
+- Login and registration flows with guest and protected route guards
+- Workspace loading, selection, and workspace creation
+- Responsive dashboard and workspace layouts
+- BlockNote editor with block persistence and debounced updates
+- Drag-and-drop support for sortable content
+- Shared UI components built with Radix primitives and Tailwind CSS
+- Client state managed with Redux Toolkit and React context
 
 ## Tech stack
 
-- React 19 + TypeScript
-- Vite
-- Tailwind CSS
-- Radix UI (within Shadcn)
-- Editor.js
-- React Router DOM
-- Redux Toolkit
-- Zod
+- React 19 and TypeScript
+- Vite 7
+- React Router DOM 7
+- BlockNote
+- Redux Toolkit and React Redux
+- Tailwind CSS 4 and Radix UI
+- Zod and TanStack Form
+- Axios
+
+## Requirements
+
+- Node.js 18 or newer
+- npm
+- Access to the backend API used by the application
 
 ## Getting started
 
-Install dependencies and start the dev server:
+Install dependencies, then start the Vite development server:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open the app at `http://localhost:5173`.
+Open the local URL printed by Vite, normally `http://localhost:5173`.
+
+The app starts at the protected dashboard route. Use `/login` or `/register` to authenticate, then create a workspace at `/workspaces/create` if your account does not have one yet.
 
 ## Available scripts
 
-- `npm run dev` — start the Vite development server
-- `npm run build` — build the app for production
-- `npm run preview` — preview the production build
-- `npm run lint` — run ESLint checks
-- `npm run format` — format files with Prettier
-- `npm run format:check` — check formatting
+| Command                | Description                             |
+| ---------------------- | --------------------------------------- |
+| `npm run dev`          | Start the Vite development server       |
+| `npm run build`        | Type-check and build for production     |
+| `npm run preview`      | Preview the production build locally    |
+| `npm run typecheck`    | Run TypeScript without emitting files   |
+| `npm run lint`         | Run ESLint                              |
+| `npm run lint:fix`     | Fix automatically fixable ESLint issues |
+| `npm run format`       | Format the repository with Prettier     |
+| `npm run format:check` | Check formatting without changing files |
 
 ## Project structure
 
-- `src/App.tsx` — application routes and layout composition
-- `src/main.tsx` — entry point with store and providers
-- `src/pages` — route pages for demo, auth, workspace creation, and fallback
-- `src/components` — reusable UI components and editor integration
-- `src/context` — auth, workspace, and loader providers
-- `src/lib` — route guards, store setup, and utilities
-- `src/services` — API/service calls for auth and workspace management
-- `src/schemas` — validation schemas with Zod
-- `src/hooks` — shared hooks for auth, workspace, and loader state
+```text
+src/
+├── app/                  # Redux store and dashboard data
+├── features/
+│   ├── auth/             # Authentication API, context, guards, and pages
+│   ├── dashboard/        # Dashboard page
+│   ├── pana/             # Document editor, block API, state, and utilities
+│   ├── user/              # User API
+│   └── workspaces/        # Workspace API, context, and pages
+└── shared/
+	├── components/       # Reusable editor, form, loader, and UI components
+	├── constants/         # Route and application constants
+	├── context/           # Shared providers
+	├── layouts/           # Main and workspace layouts
+	├── lib/               # Shared libraries and API helpers
+	└── utils/             # Shared utility functions and hooks
+```
 
-## Notes
+The `@` import alias points to `src`, and is configured in `vite.config.ts` and the TypeScript configuration.
 
-- The `Demo` page currently provides a placeholder dashboard layout.
-- The editor is implemented in `src/components/editor/DefaultEditor.tsx` using Editor.js.
-- Workspace creation is handled in `src/pages/workspaces/create/index.tsx`.
-- Protected routing is managed by `src/lib/auth/ProtectedRoute.tsx` and `src/lib/auth/GuestRoute.tsx`.
+## Routing
 
-## Next improvements
+- `/login` — sign in
+- `/register` — create an account
+- `/` — authenticated dashboard
+- `/workspaces/create` — create a workspace
+- `/:id` — authenticated Pana document editor
 
-Possible next steps for the Notion-like experience:
+Authentication and workspace data are provided at the application root. API calls live alongside their feature under `src/features/*/api`.
 
-- add document/page creation and navigation
-- save editor content to backend or local storage
-- improve editor toolset and toolbar controls
-- add workspace/team collaboration features
-- add drag-and-drop page and block ordering
+## Development notes
 
----
-
-Built as a minimal React/TypeScript app for a Notion-style content workspace.
+- Editor changes are synchronized through the Pana block API after a short debounce.
+- Route definitions are centralized in `src/shared/constants/routes.ts`.
+- Run `npm run typecheck`, `npm run lint`, and `npm run format:check` before opening a pull request.
