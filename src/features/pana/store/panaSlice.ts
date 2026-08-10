@@ -49,11 +49,23 @@ export const panaSlice = createAppSlice({
     togglePana: create.reducer((state, action: PayloadAction<string>) => {
       let activePana;
       let activePanaId: string = action.payload;
+
+      const isOpenAction = !state.panas[activePanaId].isOpen;
+
+      if (!isOpenAction) {
+        state.panas[activePanaId] = {
+          ...state.panas[activePanaId],
+          isOpen: false,
+        };
+
+        return;
+      }
+
       do {
         activePana = state.panas[activePanaId];
         state.panas[activePanaId] = {
           ...state.panas[activePanaId],
-          isOpen: !state?.panas?.[activePanaId]?.isOpen,
+          isOpen: isOpenAction,
         };
 
         if (activePana?.parentId) activePanaId = activePana.parentId;
