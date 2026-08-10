@@ -5,7 +5,7 @@ import { createAppSlice } from '@/app/store/createAppSlice';
 
 import type { NormalizePanas } from '../types';
 
-import { addNewPana, fetchPanas, removePana } from './panaApi';
+import { addNewPana, fetchPanas, patchPana, removePana } from './panaApi';
 import { buildPana, normalizePanas } from './utils';
 
 export interface panaSliceState {
@@ -84,6 +84,34 @@ export const panaSlice = createAppSlice({
         },
       }
     ),
+    renamePana: create.asyncThunk(
+      async ({
+        panaId,
+        updatedTitle,
+      }: {
+        panaId: string;
+        updatedTitle: string;
+      }) => patchPana(panaId, { title: updatedTitle || 'A New Page' }),
+      {
+        pending: (state) => {
+          state.status = 'loading';
+        },
+        fulfilled: (state, action) => {
+          state.status = 'succeed';
+          const { meta } = action;
+
+          if (meta.arg.panaId) {
+            state.panas[meta.arg.panaId] = {
+              ...state.panas[meta.arg.panaId],
+              title: meta.arg.updatedTitle || 'A New Page',
+            };
+          }
+        },
+        rejected: (state) => {
+          state.status = 'failed';
+        },
+      }
+    ),
     deletePana: create.asyncThunk(
       async (panaId: string) => removePana(panaId),
       {
@@ -104,7 +132,7 @@ export const panaSlice = createAppSlice({
   }),
 });
 
-export const { fetchRootPanas, togglePana, addPana, deletePana } =
+export const { fetchRootPanas, togglePana, addPana, deletePana, renamePana } =
   panaSlice.actions;
 
 export default panaSlice.reducer;

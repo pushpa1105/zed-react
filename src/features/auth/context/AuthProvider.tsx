@@ -6,12 +6,12 @@ import { useLoader } from '@/shared/context/loader';
 import { withAsyncHandler } from '@/shared/utils';
 
 import { fetchAuthenticatedUser, login, logout } from '../api';
-import type { LoginFormType } from '../types';
+import type { AuthUserType, LoginFormType } from '../types';
 
 import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState<AuthUserType | null>(null);
   const { setAppLoading } = useLoader();
   const navigate = useNavigate();
 
