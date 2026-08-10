@@ -6,6 +6,12 @@ import axios, {
 
 import { ROUTES } from '../../constants';
 
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    skipAuthRefresh?: boolean;
+  }
+}
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
@@ -23,7 +29,11 @@ const processQueue = (error: unknown) => {
   failedQueue = [];
 };
 
-const requestHandler = (request: InternalAxiosRequestConfig) => {
+const requestHandler = (
+  request: InternalAxiosRequestConfig & {
+    skipAuthRefresh?: boolean;
+  }
+) => {
   request.headers.Accept = 'application/json';
 
   return request;
@@ -67,14 +77,22 @@ api.interceptors.response.use(
 
 const handleAuthRefresh = async (error: AxiosError) => {
   const originalRequest = error.config as InternalAxiosRequestConfig & {
-    _retry: boolean;
+    _retry?: boolean;
+    skipAuthRefresh?: boolean;
   };
 
-  if (originalRequest?._retry || originalRequest.url?.includes(ROUTES.LOGIN))
+  // Don't attempt refresh for calls that are explicitly opted out,
+  // for the login request itself, or for already-retried requests
+  if (
+    originalRequest?._retry ||
+    originalRequest?.skipAuthRefresh ||
+    originalRequest.url?.includes(ROUTES.LOGIN)
+  ) {
     return Promise.reject(error);
+  }
 
   if (originalRequest.url?.includes('/auth/refresh')) {
-    window.location.href = ROUTES.LOGIN;
+    redirectToLogin();
     return Promise.reject(error);
   }
 
@@ -98,9 +116,16 @@ const handleAuthRefresh = async (error: AxiosError) => {
     return api(originalRequest);
   } catch (err) {
     processQueue(err);
-    window.location.href = ROUTES.LOGIN;
+    redirectToLogin(); // guarded version
   } finally {
     isHandlingAuthRefresh = false;
+  }
+};
+
+// Guard against redirecting (and reloading) when already there
+const redirectToLogin = () => {
+  if (window.location.pathname !== ROUTES.LOGIN) {
+    window.location.href = ROUTES.LOGIN;
   }
 };
 

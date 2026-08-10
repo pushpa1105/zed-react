@@ -1,14 +1,16 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ChevronDown,
   ChevronUp,
   FileText,
   MoreHorizontal,
+  Pencil,
   Plus,
   Trash2,
 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
+import type { PanaType } from '@/features/pana';
 import {
   selectChildPanasById,
   selectRootPanas,
@@ -17,9 +19,13 @@ import {
   addPana,
   deletePana,
   fetchRootPanas,
+  renamePana,
   togglePana,
 } from '@/features/pana/store/panaSlice';
 import { useWorkspace } from '@/features/workspaces';
+
+import { Button } from '@/shared/components/ui/button';
+import { Input } from '@/shared/components/ui/input';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 
@@ -28,6 +34,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import {
@@ -50,12 +59,77 @@ interface PanaItemProps {
   handleDeletePana: (id: string) => void;
 }
 
+const PanaItemMenu = ({
+  pana,
+  handleAddPage,
+  handleDeletePana,
+}: {
+  pana: PanaType;
+  handleAddPage: (id?: string) => void;
+  handleDeletePana: (id: string) => void;
+}) => {
+  const { isMobile } = useSidebar();
+  const dispatch = useAppDispatch();
+
+  const [newName, setNewName] = useState(pana.title);
+
+  const handleRename = () => {
+    if (newName === pana.title) return;
+
+    dispatch(renamePana({ panaId: pana._id, updatedTitle: newName }));
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <SidebarMenuAction showOnHover>
+          <MoreHorizontal />
+          <span className="sr-only">More</span>
+        </SidebarMenuAction>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-48 rounded-lg"
+        side={isMobile ? 'bottom' : 'right'}
+        align={isMobile ? 'end' : 'start'}
+      >
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <Pencil className="text-muted-foreground mr-2 h-4 w-4" />
+            <span>Rename</span>
+          </DropdownMenuSubTrigger>
+
+          <DropdownMenuSubContent className="p-2">
+            <div className="flex items-center gap-2">
+              <Input
+                id="title"
+                name="title"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="A New Page"
+              />
+              <Button onClick={handleRename}>Save</Button>
+            </div>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+        <DropdownMenuItem onClick={() => handleAddPage(pana._id)}>
+          <Plus className="text-muted-foreground" />
+          <span>Add a new page</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => handleDeletePana(pana._id)}>
+          <Trash2 className="text-muted-foreground" />
+          <span>Move to Trash</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 const PanaItem = ({
   parentId,
   handleAddPage,
   handleDeletePana,
 }: PanaItemProps) => {
-  const { isMobile } = useSidebar();
   const dispatch = useAppDispatch();
   const { id } = useParams();
 
@@ -108,29 +182,12 @@ const PanaItem = ({
             <span>{item?.title ?? 'New Page'}</span>
           </Link>
         </SidebarMenuButton>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuAction showOnHover>
-              <MoreHorizontal />
-              <span className="sr-only">More</span>
-            </SidebarMenuAction>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-48 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
-            align={isMobile ? 'end' : 'start'}
-          >
-            <DropdownMenuItem onClick={() => handleAddPage(item._id)}>
-              <Plus className="text-muted-foreground" />
-              <span>Add a new page</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleDeletePana(item._id)}>
-              <Trash2 className="text-muted-foreground" />
-              <span>Move to Trash</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+
+        <PanaItemMenu
+          pana={item}
+          handleAddPage={handleAddPage}
+          handleDeletePana={handleDeletePana}
+        />
       </SidebarMenuItem>
       {item?.isOpen && (
         <div className="pl-4">

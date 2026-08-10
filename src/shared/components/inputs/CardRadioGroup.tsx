@@ -17,7 +17,7 @@ export interface CardRadiogroupItemInterface {
 interface CardRadiogroupInterface {
   items: CardRadiogroupItemInterface[];
   defaultValue?: string;
-  onChange?: (e: _) => void;
+  onChange?: (value: string) => void;
   className?: string;
 }
 

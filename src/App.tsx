@@ -1,26 +1,42 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { AuthProvider, LoginPage, RegisterPage } from '@/features/auth';
+import { AuthProvider } from '@/features/auth';
 import { GuestRoute } from '@/features/auth/components/GuestRoute';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
-import { Dashboard } from '@/features/dashboard';
-import { Pana } from '@/features/pana';
-import { CreateWorkspace, WorkspaceProvider } from '@/features/workspaces';
+import { WorkspaceProvider } from '@/features/workspaces';
 
+import { AppLoader } from '@/shared/components/loaders/AppLoader';
 import { ROUTES } from '@/shared/constants';
 import MainLayout from '@/shared/layouts/main-layout';
 import WorkspaceLayout from '@/shared/layouts/workspace-layout';
-import NotFound from '@/shared/pages/NotFound';
 
 import '@/App.css';
 import '@/index.css';
 
+const LoginPage = lazy(() =>
+  import('@/features/auth').then((m) => ({ default: m.LoginPage }))
+);
+const RegisterPage = lazy(() =>
+  import('@/features/auth').then((m) => ({ default: m.RegisterPage }))
+);
+const Dashboard = lazy(() =>
+  import('@/features/dashboard').then((m) => ({ default: m.Dashboard }))
+);
+const Pana = lazy(() =>
+  import('@/features/pana').then((m) => ({ default: m.Pana }))
+);
+const CreateWorkspace = lazy(() =>
+  import('@/features/workspaces').then((m) => ({ default: m.CreateWorkspace }))
+);
+const NotFound = lazy(() => import('@/shared/pages/NotFound'));
+
 function App() {
   return (
-    <>
-      <Router>
-        <AuthProvider>
-          <WorkspaceProvider>
+    <Router>
+      <AuthProvider>
+        <WorkspaceProvider>
+          <Suspense fallback={<AppLoader />}>
             <Routes>
               <Route element={<MainLayout />}>
                 <Route element={<ProtectedRoute />}>
@@ -28,12 +44,10 @@ function App() {
                     <Route path={ROUTES.ROOT} element={<Dashboard />} />
                     <Route path={ROUTES.PANA} element={<Pana />} />
                   </Route>
-                  {/* Workspace Section --- BEGIN ---*/}
                   <Route
                     path={ROUTES.CREATE_WORKSPACE}
                     element={<CreateWorkspace />}
                   />
-                  {/* Workspace Section --- END ---*/}
                 </Route>
 
                 <Route element={<GuestRoute />}>
@@ -44,10 +58,10 @@ function App() {
 
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </WorkspaceProvider>
-        </AuthProvider>
-      </Router>
-    </>
+          </Suspense>
+        </WorkspaceProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

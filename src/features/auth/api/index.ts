@@ -10,4 +10,5 @@ export const register = async (data: RegisterFormType) =>
 
 export const logout = async () => await api.post('/logout');
 
-export const fetchAuthenticatedUser = async () => await api.get('/whoami');
+export const fetchAuthenticatedUser = async () =>
+  await api.get('/whoami', { skipAuthRefresh: true });
