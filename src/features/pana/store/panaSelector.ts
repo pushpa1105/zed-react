@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 
 import { filterPanas, getPanaById } from '@/features/pana/store/utils';
+import type { PanaType } from '@/features/pana/types';
 
 import type { RootState } from '@/app/store';
 
@@ -24,3 +25,18 @@ export const selectChildPanasById = (parentId: string) =>
     [selectPanas, (state: RootState) => selectChildrenIds(state, parentId)],
     (panas, filterIds) => filterPanas(panas, filterIds)
   );
+
+export const selectPanaBreadCrumbs = (panaId?: string) =>
+  createSelector([selectPanas], (panas) => {
+    if (!panaId) return [];
+    let current = getPanaById(panas, panaId) as PanaType | null;
+    const crumbs: PanaType[] = [];
+    while (current) {
+      crumbs.unshift(current);
+      current = current.parentId
+        ? (getPanaById(panas, current.parentId) as PanaType | null)
+        : null;
+    }
+
+    return crumbs;
+  });

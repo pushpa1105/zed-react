@@ -26,7 +26,7 @@ export const AppSidebar = ({
   };
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar {...props}>
       <SidebarHeader>
         <WorkspaceSwitcher />
       </SidebarHeader>

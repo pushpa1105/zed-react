@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { resetPanas } from '@/features/pana';
+
 import { ROUTES } from '@/shared/constants';
 import { useLoader } from '@/shared/context/loader';
 import { withAsyncHandler } from '@/shared/utils';
+
+import { useAppDispatch } from '@/app/store/hooks';
 
 import { fetchAuthenticatedUser, login, logout } from '../api';
 import type { AuthUserType, LoginFormType } from '../types';
@@ -14,11 +18,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<AuthUserType | null>(null);
   const { setAppLoading } = useLoader();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const signOut = useCallback(async () => {
     await withAsyncHandler(() => logout(), {
       onSuccess: () => {
         setCurrentUser(null);
+        dispatch(() => resetPanas);
         navigate(ROUTES.LOGIN);
       },
     });

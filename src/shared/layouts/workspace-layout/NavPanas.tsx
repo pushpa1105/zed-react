@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   ChevronDown,
   ChevronUp,
@@ -10,22 +10,19 @@ import {
 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
-import type { PanaType } from '@/features/pana';
-import {
-  selectChildPanasById,
-  selectRootPanas,
-} from '@/features/pana/store/panaSelector';
 import {
   addPana,
   deletePana,
   fetchRootPanas,
+  type PanaType,
   renamePana,
+  selectChildPanasById,
+  selectRootPanas,
   togglePana,
-} from '@/features/pana/store/panaSlice';
+} from '@/features/pana';
 import { useWorkspace } from '@/features/workspaces';
 
-import { Button } from '@/shared/components/ui/button';
-import { Input } from '@/shared/components/ui/input';
+import { RenamePanaMenu } from '@/shared/layouts/workspace-layout/RenamePanaMenu';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 
@@ -71,13 +68,8 @@ const PanaItemMenu = ({
   const { isMobile } = useSidebar();
   const dispatch = useAppDispatch();
 
-  const [newName, setNewName] = useState(pana.title);
-
-  const handleRename = () => {
-    if (newName === pana.title) return;
-
-    dispatch(renamePana({ panaId: pana._id, updatedTitle: newName }));
-  };
+  const handleRename = (updatedTitle: string) =>
+    dispatch(renamePana({ panaId: pana._id, updatedTitle }));
 
   return (
     <DropdownMenu>
@@ -99,16 +91,7 @@ const PanaItemMenu = ({
           </DropdownMenuSubTrigger>
 
           <DropdownMenuSubContent className="p-2">
-            <div className="flex items-center gap-2">
-              <Input
-                id="title"
-                name="title"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="A New Page"
-              />
-              <Button onClick={handleRename}>Save</Button>
-            </div>
+            <RenamePanaMenu panaTitle={pana.title} handleSave={handleRename} />
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuItem onClick={() => handleAddPage(pana._id)}>
