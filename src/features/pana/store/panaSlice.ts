@@ -46,6 +46,11 @@ export const panaSlice = createAppSlice({
         },
       }
     ),
+    resetPanas: create.reducer((state) => {
+      state.panas = {};
+      state.rootPanasIds = [];
+      state.status = null;
+    }),
     togglePana: create.reducer((state, action: PayloadAction<string>) => {
       let activePana;
       let activePanaId: string = action.payload;
@@ -144,7 +149,13 @@ export const panaSlice = createAppSlice({
   }),
 });
 
-export const { fetchRootPanas, togglePana, addPana, deletePana, renamePana } =
-  panaSlice.actions;
+export const {
+  fetchRootPanas,
+  togglePana,
+  addPana,
+  deletePana,
+  renamePana,
+  resetPanas,
+} = panaSlice.actions;
 
 export default panaSlice.reducer;

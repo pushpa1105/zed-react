@@ -1,6 +1,6 @@
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
 
-import { panaSlice } from '@/features/pana/store/panaSlice';
+import { panaSlice } from '@/features/pana';
 
 const rootReducer = combineSlices(panaSlice);
 

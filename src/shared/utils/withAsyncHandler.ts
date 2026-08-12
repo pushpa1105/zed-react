@@ -2,9 +2,15 @@ import { toast } from 'sonner';
 
 import { setGlobalLoading } from '../provider-bridges';
 
-type ApiErrorResponse = {
+type FieldError = {
+  field: string;
+  message: string;
+};
+
+export type ApiErrorResponse = {
   response?: {
     data?: {
+      errors?: FieldError[];
       message?: string;
     };
   };
@@ -54,7 +60,7 @@ export const withAsyncHandler = async <
       toast.error(typedErr?.response?.data?.message || 'Something went wrong');
     }
 
-    throw err; // allows optional caller catch
+    // throw err; // allows optional caller catch
   } finally {
     if (showLoader) setGlobalLoading(false);
     onFinally?.();
