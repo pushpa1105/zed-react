@@ -1,0 +1,95 @@
+{
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "search": "Search",
+    "loading": "Loading…"
+  },
+  "shell": {
+    "account": "Account",
+    "signOut": "Sign out",
+    "toggleSidebar": "Toggle sidebar",
+    "language": "Language",
+    "commandMenu": "Search or jump to…",
+    "commandEmpty": "No results.",
+    "commandPages": "Pages",
+    "commandActions": "Actions",
+    "commandTheme": "Theme"
+  },
+  "pager": {
+    "previous": "Previous page",
+    "next": "Next page",
+    "status": "Page {{page}} of {{totalPages}}"
+  },
+  "landing": {
+    "badge": "Modular · Type-safe · Themeable",
+    "title": "Build React apps out of self-contained feature modules",
+    "subtitle": "Each feature declares its routes, navigation, permissions and translations. The app assembles them. Tailwind CSS v4, shadcn/ui and a live theme engine included.",
+    "getStarted": "Get started",
+    "goToApp": "Open the app",
+    "docs": "Read the docs",
+    "points": {
+      "modules": {
+        "title": "Feature modules",
+        "description": "Add a folder, register one line: routes, sidebar, ⌘K and i18n are wired up for you."
+      },
+      "theme": {
+        "title": "Live theme engine",
+        "description": "Light/dark, presets, any brand color, radius, font and density. Export the result as CSS."
+      },
+      "contracts": {
+        "title": "Typed API contracts",
+        "description": "Every response is validated with Zod, so backend drift fails loudly in one place."
+      },
+      "access": {
+        "title": "Roles & policies",
+        "description": "Guards for routes, role-filtered navigation and per-resource policies."
+      },
+      "quality": {
+        "title": "Enforced architecture",
+        "description": "Lint rules keep layers one-way; tests cover modules, translations and flows."
+      },
+      "dx": {
+        "title": "Batteries included",
+        "description": "Mock API, generators, CI, Docker, i18n, E2E tests and a command palette."
+      }
+    }
+  },
+  "theme": {
+    "customize": "Customize theme",
+    "description": "Changes are saved on this device and applied instantly.",
+    "mode": "Mode",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "color": "Color",
+    "customColor": "Custom color",
+    "radius": "Radius",
+    "font": "Font",
+    "scale": "Scale",
+    "reset": "Reset",
+    "copyCss": "Copy CSS",
+    "copied": "Theme CSS copied to the clipboard",
+    "copyFailed": "Couldn't access the clipboard"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "notFoundDescription": "The page you are looking for doesn't exist or has been moved.",
+    "forbidden": "You don't have access to this page",
+    "goHome": "Go home",
+    "somethingWrong": "Something went wrong",
+    "somethingWrongDescription": "An unexpected error occurred. Try refreshing the page.",
+    "refresh": "Refresh"
+  },
+  "validation": {
+    "required": "Required",
+    "email": "Enter a valid email",
+    "passwordMin": "Password must be at least 5 characters",
+    "tooLong": "This is too long"
+  }
+}

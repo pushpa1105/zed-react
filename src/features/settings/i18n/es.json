@@ -1,0 +1,36 @@
+{
+  "nav": "Ajustes",
+  "commands": {
+    "appearance": "Personalizar apariencia",
+    "profile": "Editar perfil"
+  },
+  "page": {
+    "title": "Ajustes",
+    "description": "Gestiona tu perfil y tus preferencias."
+  },
+  "tabs": {
+    "appearance": "Apariencia",
+    "profile": "Perfil",
+    "language": "Idioma"
+  },
+  "appearance": {
+    "title": "Apariencia",
+    "description": "Personaliza el aspecto de la app. Los cambios se guardan en este dispositivo.",
+    "preview": "Vista previa",
+    "previewTitle": "El veloz murciélago hindú",
+    "previewText": "Todos los componentes leen los mismos tokens de diseño, así que los cambios se aplican al instante.",
+    "previewSwitch": "Notificaciones"
+  },
+  "profile": {
+    "title": "Perfil",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "bio": "Biografía",
+    "bioHint": "Hasta 280 caracteres.",
+    "saved": "Perfil actualizado"
+  },
+  "language": {
+    "title": "Idioma",
+    "description": "Elige el idioma de la interfaz."
+  }
+}

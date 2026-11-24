@@ -1,0 +1,60 @@
+{
+  "nav": "Tasks",
+  "commands": {
+    "create": "Create a task"
+  },
+  "page": {
+    "title": "Tasks",
+    "description": "Create, track and complete your work."
+  },
+  "new": "New task",
+  "edit": "Edit task",
+  "formDescription": "Fill in the details below.",
+  "fields": {
+    "title": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority"
+  },
+  "status": {
+    "todo": "To do",
+    "in_progress": "In progress",
+    "done": "Done"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "filters": {
+    "search": "Search tasks",
+    "status": "Filter by status",
+    "allStatuses": "All statuses"
+  },
+  "table": {
+    "title": "Title",
+    "status": "Status",
+    "priority": "Priority",
+    "created": "Created",
+    "actions": "Actions"
+  },
+  "empty": {
+    "title": "No tasks found",
+    "description": "Create a task or change the filters."
+  },
+  "detail": {
+    "created": "Created {{date}}",
+    "noDescription": "No description",
+    "notFound": "Task not found",
+    "back": "All tasks"
+  },
+  "delete": {
+    "title": "Delete task?",
+    "description": "“{{title}}” will be permanently deleted. This can’t be undone."
+  },
+  "toast": {
+    "created": "Task created",
+    "updated": "Task updated",
+    "deleted": "Task deleted"
+  }
+}

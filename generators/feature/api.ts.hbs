@@ -1,0 +1,24 @@
+import { queryOptions, useQuery } from '@tanstack/react-query';
+
+import { api } from '@/core/api/client';
+import { paginated } from '@/core/api/schemas';
+
+import { {{camelCase name}}ItemSchema } from '../model/{{kebabCase name}}';
+
+export const {{camelCase name}}Keys = {
+  all: ['{{kebabCase name}}'] as const,
+  list: (page: number) => [...{{camelCase name}}Keys.all, 'list', { page }] as const,
+};
+
+export const {{camelCase name}}Api = {
+  list: (page: number) =>
+    api.get('/{{kebabCase name}}', paginated({{camelCase name}}ItemSchema), { params: { page } }),
+};
+
+export const {{camelCase name}}Query = (page = 1) =>
+  queryOptions({
+    queryKey: {{camelCase name}}Keys.list(page),
+    queryFn: () => {{camelCase name}}Api.list(page),
+  });
+
+export const use{{pascalCase name}} = (page = 1) => useQuery({{camelCase name}}Query(page));

@@ -1,0 +1,36 @@
+import type { PageModule } from '@/core/feature/define-feature';
+import { useTranslation } from '@/core/i18n/use-translation';
+import { Page } from '@/core/layout/page';
+import { Skeleton } from '@/shared/ui/skeleton';
+
+import { {{camelCase name}}Query, use{{pascalCase name}} } from '../api/{{kebabCase name}}';
+
+export const loader: PageModule['loader'] =
+  ({ queryClient }) =>
+  async () => {
+    await queryClient.prefetchQuery({{camelCase name}}Query());
+    return null;
+  };
+
+export default function {{pascalCase name}}Page() {
+  const { t } = useTranslation('{{camelCase name}}');
+  const query = use{{pascalCase name}}();
+
+  return (
+    <Page title={t('page.title')} description={t('page.description')}>
+      {query.isPending ? (
+        <Skeleton className="h-40 w-full" />
+      ) : !query.data?.data.length ? (
+        <p className="text-muted-foreground">{t('empty')}</p>
+      ) : (
+        <ul className="divide-y rounded-lg border">
+          {query.data.data.map((item) => (
+            <li key={item.id} className="p-3">
+              {item.name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Page>
+  );
+}

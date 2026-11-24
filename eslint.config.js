@@ -1,0 +1,217 @@
+// @ts-check
+import fs from 'node:fs';
+import path from 'node:path';
+
+import js from '@eslint/js';
+import prettier from 'eslint-config-prettier';
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
+import { importX } from 'eslint-plugin-import-x';
+import reactHooks from 'eslint-plugin-react-hooks';
+import { reactRefresh } from 'eslint-plugin-react-refresh';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+
+/* -------------------------------------------------------------------------- */
+/*  1. Layers (see docs/architecture.md). Imports only point downwards:        */
+/*                                                                             */
+/*     app  →  features  →  core  →  shared                                    */
+/*                                                                             */
+/*  - shared:   generic building blocks, knows nothing about this app          */
+/*  - core:     app infrastructure, knows nothing about features               */
+/*  - features: never import each other; the app composes them                 */
+/*  - mocks:    a fake backend; may only read core/config                      */
+/* -------------------------------------------------------------------------- */
+const featuresDir = path.resolve(import.meta.dirname, 'src/features');
+const features = fs.existsSync(featuresDir)
+  ? fs.readdirSync(featuresDir).filter((f) => fs.statSync(path.join(featuresDir, f)).isDirectory())
+  : [];
+
+const layerZones = [
+  {
+    target: './src/shared',
+    from: ['./src/core', './src/features', './src/app', './src/mocks', './src/testing'],
+    message: 'shared/ is generic: it must not depend on core, features or app.',
+  },
+  {
+    target: './src/core',
+    from: ['./src/features', './src/app', './src/mocks', './src/testing'],
+    message: 'core/ is feature-agnostic: it must not depend on features or app.',
+  },
+  ...features.map((feature) => ({
+    target: `./src/features/${feature}`,
+    from: './src/features',
+    except: [`./${feature}`],
+    message: 'Features must not import each other. Share code via core/ or shared/.',
+  })),
+  {
+    target: './src/features',
+    from: ['./src/app', './src/mocks', './src/testing'],
+    message: 'Features must not depend on the app layer, the mock backend or test utils.',
+  },
+  {
+    target: './src/mocks',
+    from: ['./src/features', './src/app', './src/shared'],
+    message: 'The mock backend stands in for a real server: it must not import app code.',
+  },
+];
+
+/* -------------------------------------------------------------------------- */
+/*  2. Library adapters. Each third-party library is used through ONE file,    */
+/*     so replacing it means editing that file only.                           */
+/* -------------------------------------------------------------------------- */
+const ADAPTERS = [
+  { libs: ['axios'], adapter: '@/core/api/client', files: ['src/core/api/**'] },
+  {
+    libs: ['react-router', 'react-router/dom'],
+    adapter: '@/core/router/router',
+    files: ['src/core/router/**'],
+  },
+  {
+    libs: ['react-i18next', 'i18next'],
+    adapter: '@/core/i18n/use-translation',
+    files: ['src/core/i18n/**', '**/*.d.ts'],
+  },
+  {
+    libs: ['sonner'],
+    adapter: '@/core/notify/notify',
+    files: ['src/core/notify/**', 'src/shared/ui/sonner.tsx'],
+  },
+  { libs: ['dayjs'], adapter: '@/shared/lib/format', files: ['src/shared/lib/format.ts'] },
+  { libs: ['cn'], adapter: '@/shared/lib/cn', files: ['src/shared/lib/cn.ts', 'src/shared/ui/**'] },
+];
+
+/** @param {string[]} allowed libraries the current files may import directly */
+const adapterPaths = (allowed = []) =>
+  ADAPTERS.filter(({ libs }) => !libs.some((lib) => allowed.includes(lib))).flatMap(
+    ({ libs, adapter }) =>
+      libs.map((name) => ({
+        name,
+        message: `Import from "${adapter}" instead: each library is wrapped in one adapter so it can be swapped.`,
+      })),
+  );
+
+/** @param {string[]} allowed */
+const restrictedPatterns = (allowed = []) => [
+  {
+    group: ['../../*'],
+    message: 'Use the "@/..." alias for imports that leave the current folder.',
+  },
+  ...(allowed.includes('dayjs')
+    ? []
+    : [{ group: ['dayjs/*'], message: 'Use "@/shared/lib/format" instead.' }]),
+];
+
+/** Test code may import test utilities and the mock backend from any layer. */
+const testZones = layerZones
+  .filter((zone) => zone.target !== './src/mocks')
+  .map((zone) => ({
+    ...zone,
+    from: [zone.from]
+      .flat()
+      .filter((from) => from !== './src/mocks' && from !== './src/testing' && from !== './src/app'),
+  }))
+  .filter((zone) => zone.from.length);
+
+export default defineConfig([
+  globalIgnores([
+    'dist',
+    'coverage',
+    'playwright-report',
+    'test-results',
+    'public/mockServiceWorker.js',
+    // Generated by the shadcn CLI. Keep them as upstream ships them.
+    'src/shared/ui',
+  ]),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs.flat['recommended-latest'],
+      reactRefresh.configs.vite(),
+      importX.flatConfigs.recommended,
+      importX.flatConfigs.typescript,
+    ],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: { ...globals.browser },
+    },
+    settings: {
+      'import-x/resolver-next': [createTypeScriptImportResolver({ alwaysTryTypes: true })],
+    },
+    rules: {
+      'import-x/no-restricted-paths': ['error', { zones: layerZones }],
+      'import-x/no-cycle': 'error',
+      'import-x/order': [
+        'warn',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          pathGroups: [{ pattern: '@/**', group: 'internal' }],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
+      ],
+      'import-x/no-named-as-default-member': 'off',
+      'no-restricted-imports': ['error', { paths: adapterPaths(), patterns: restrictedPatterns() }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
+      '@typescript-eslint/no-explicit-any': 'error',
+    },
+  },
+
+  // The app layer may only use a feature through its public manifest (index.ts).
+  {
+    files: ['src/app/**/*.{ts,tsx}'],
+    ignores: ['src/app/i18n-resources.d.ts', 'src/app/__tests__/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: adapterPaths(),
+          patterns: [
+            ...restrictedPatterns(),
+            {
+              group: ['@/features/*/*'],
+              message:
+                "Import a feature's manifest ('@/features/<name>') only; its internals are private.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // Each adapter file is allowed to import the libraries it wraps.
+  ...ADAPTERS.map(({ libs, files }) => ({
+    files,
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { paths: adapterPaths(libs), patterns: restrictedPatterns(libs) },
+      ],
+    },
+  })),
+
+  // Tests, the mock backend and test utilities may reach anywhere.
+  {
+    files: ['src/testing/**', 'src/mocks/**', '**/__tests__/**', '**/*.test.{ts,tsx}'],
+    rules: {
+      'import-x/no-restricted-paths': ['error', { zones: testZones }],
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    // Page modules export a `loader` next to the component; auth exports helpers.
+    files: ['src/features/*/pages/**', 'src/core/auth/**', 'src/core/router/**'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+  {
+    files: ['*.{js,ts}', 'e2e/**'],
+    languageOptions: { globals: { ...globals.node } },
+  },
+  prettier,
+]);

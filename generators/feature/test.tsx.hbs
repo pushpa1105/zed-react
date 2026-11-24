@@ -1,0 +1,8 @@
+import { renderApp, screen } from '@/testing/test-utils';
+
+describe('{{titleCase name}} feature', () => {
+  it('renders its page from the module registry', async () => {
+    await renderApp('/app/{{kebabCase name}}', { user: 'admin' });
+    expect(await screen.findByText('Example {{camelCase name}} item')).toBeInTheDocument();
+  });
+});

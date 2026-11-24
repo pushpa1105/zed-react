@@ -1,0 +1,21 @@
+{
+  "fields": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido"
+  },
+  "signIn": {
+    "title": "Hola de nuevo",
+    "description": "Inicia sesión para continuar",
+    "submit": "Iniciar sesión",
+    "noAccount": "¿No tienes cuenta?",
+    "demo": "Cuenta demo: demo@example.com / password"
+  },
+  "signUp": {
+    "title": "Crear una cuenta",
+    "description": "Empieza en menos de un minuto",
+    "submit": "Crear cuenta",
+    "haveAccount": "¿Ya tienes cuenta?"
+  }
+}

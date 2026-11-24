@@ -1,0 +1,16 @@
+{
+  "nav": "Users",
+  "page": {
+    "title": "Users",
+    "description": "Everyone with access to this workspace. Visible to admins only."
+  },
+  "table": {
+    "name": "Name",
+    "role": "Role",
+    "joined": "Joined"
+  },
+  "roles": {
+    "ADMIN": "Admin",
+    "USER": "Member"
+  }
+}

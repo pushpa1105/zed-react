@@ -1,0 +1,95 @@
+{
+  "actions": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saveChanges": "Guardar cambios",
+    "create": "Crear",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Volver",
+    "search": "Buscar",
+    "loading": "Cargando…"
+  },
+  "shell": {
+    "account": "Cuenta",
+    "signOut": "Cerrar sesión",
+    "toggleSidebar": "Mostrar/ocultar barra lateral",
+    "language": "Idioma",
+    "commandMenu": "Buscar o ir a…",
+    "commandEmpty": "Sin resultados.",
+    "commandPages": "Páginas",
+    "commandActions": "Acciones",
+    "commandTheme": "Tema"
+  },
+  "pager": {
+    "previous": "Página anterior",
+    "next": "Página siguiente",
+    "status": "Página {{page}} de {{totalPages}}"
+  },
+  "landing": {
+    "badge": "Modular · Tipado · Personalizable",
+    "title": "Crea apps React con módulos de funcionalidad independientes",
+    "subtitle": "Cada funcionalidad declara sus rutas, navegación, permisos y traducciones. La app las ensambla. Incluye Tailwind CSS v4, shadcn/ui y un motor de temas en vivo.",
+    "getStarted": "Comenzar",
+    "goToApp": "Abrir la app",
+    "docs": "Leer la documentación",
+    "points": {
+      "modules": {
+        "title": "Módulos de funcionalidad",
+        "description": "Añade una carpeta y registra una línea: rutas, barra lateral, ⌘K e i18n quedan conectados."
+      },
+      "theme": {
+        "title": "Motor de temas en vivo",
+        "description": "Claro/oscuro, presets, cualquier color de marca, radio, fuente y densidad. Exporta el resultado como CSS."
+      },
+      "contracts": {
+        "title": "Contratos de API tipados",
+        "description": "Cada respuesta se valida con Zod: los cambios del backend fallan en un solo lugar."
+      },
+      "access": {
+        "title": "Roles y políticas",
+        "description": "Guardas de rutas, navegación filtrada por rol y políticas por recurso."
+      },
+      "quality": {
+        "title": "Arquitectura verificada",
+        "description": "Reglas de lint mantienen las capas en un solo sentido; los tests cubren módulos, traducciones y flujos."
+      },
+      "dx": {
+        "title": "Todo incluido",
+        "description": "API simulada, generadores, CI, Docker, i18n, tests E2E y paleta de comandos."
+      }
+    }
+  },
+  "theme": {
+    "customize": "Personalizar tema",
+    "description": "Los cambios se guardan en este dispositivo y se aplican al instante.",
+    "mode": "Modo",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "color": "Color",
+    "customColor": "Color personalizado",
+    "radius": "Radio",
+    "font": "Fuente",
+    "scale": "Escala",
+    "reset": "Restablecer",
+    "copyCss": "Copiar CSS",
+    "copied": "CSS del tema copiado al portapapeles",
+    "copyFailed": "No se pudo acceder al portapapeles"
+  },
+  "errors": {
+    "notFound": "Página no encontrada",
+    "notFoundDescription": "La página que buscas no existe o se ha movido.",
+    "forbidden": "No tienes acceso a esta página",
+    "goHome": "Ir al inicio",
+    "somethingWrong": "Algo salió mal",
+    "somethingWrongDescription": "Ocurrió un error inesperado. Intenta recargar la página.",
+    "refresh": "Recargar"
+  },
+  "validation": {
+    "required": "Obligatorio",
+    "email": "Introduce un correo válido",
+    "passwordMin": "La contraseña debe tener al menos 5 caracteres",
+    "tooLong": "Es demasiado largo"
+  }
+}

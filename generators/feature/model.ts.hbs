@@ -1,0 +1,10 @@
+import { z } from 'zod';
+
+import { entitySchema } from '@/core/api/schemas';
+
+/** Single source of truth: types are inferred from the schema. */
+export const {{camelCase name}}ItemSchema = entitySchema.extend({
+  name: z.string(),
+});
+
+export type {{pascalCase name}}Item = z.infer<typeof {{camelCase name}}ItemSchema>;

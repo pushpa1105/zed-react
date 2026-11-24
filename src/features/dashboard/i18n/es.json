@@ -1,0 +1,16 @@
+{
+  "nav": "Panel",
+  "welcome": "Hola de nuevo, {{name}}",
+  "description": "Este es el resumen de tu espacio de trabajo.",
+  "role": "Has iniciado sesión como {{role}}.",
+  "stats": {
+    "total": "Tareas totales",
+    "todo": "Pendientes",
+    "inProgress": "En curso",
+    "done": "Hechas"
+  },
+  "completion": {
+    "title": "Progreso",
+    "description": "Porcentaje de tareas completadas"
+  }
+}

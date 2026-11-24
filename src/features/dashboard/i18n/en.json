@@ -1,0 +1,16 @@
+{
+  "nav": "Dashboard",
+  "welcome": "Welcome back, {{name}}",
+  "description": "Here is an overview of your workspace.",
+  "role": "You are signed in as {{role}}.",
+  "stats": {
+    "total": "Total tasks",
+    "todo": "To do",
+    "inProgress": "In progress",
+    "done": "Done"
+  },
+  "completion": {
+    "title": "Completion",
+    "description": "Share of tasks marked as done"
+  }
+}

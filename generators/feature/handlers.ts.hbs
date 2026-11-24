@@ -1,0 +1,17 @@
+import { http, HttpResponse } from 'msw';
+
+import { env } from '@/core/config/env';
+
+import { networkDelay, requireAuth } from '../utils';
+
+/** Fake backend for the {{kebabCase name}} feature. Replace with real data. */
+const items = [{ id: '{{kebabCase name}}-1', createdAt: Date.now(), name: 'Example {{camelCase name}} item' }];
+
+export const {{camelCase name}}Handlers = [
+  http.get(`${env.API_URL}/{{kebabCase name}}`, async ({ request }) => {
+    await networkDelay();
+    const auth = requireAuth(request);
+    if ('error' in auth) return auth.error;
+    return HttpResponse.json({ data: items, meta: { page: 1, total: items.length, totalPages: 1 } });
+  }),
+];

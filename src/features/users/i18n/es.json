@@ -1,0 +1,16 @@
+{
+  "nav": "Usuarios",
+  "page": {
+    "title": "Usuarios",
+    "description": "Todas las personas con acceso a este espacio. Solo visible para administradores."
+  },
+  "table": {
+    "name": "Nombre",
+    "role": "Rol",
+    "joined": "Alta"
+  },
+  "roles": {
+    "ADMIN": "Administrador",
+    "USER": "Miembro"
+  }
+}

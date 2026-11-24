@@ -1,0 +1,10 @@
+import { renderWithProviders, screen } from '@/testing/test-utils';
+
+import { {{pascalCase name}} } from '../{{kebabCase name}}';
+
+describe('{{pascalCase name}}', () => {
+  it('renders its children', async () => {
+    await renderWithProviders(<{{pascalCase name}}>Hello</{{pascalCase name}}>);
+    expect(screen.getByText('Hello')).toBeInTheDocument();
+  });
+});

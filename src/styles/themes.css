@@ -1,0 +1,118 @@
+/* -------------------------------------------------------------------------- */
+/*  Theme presets                                                              */
+/*                                                                             */
+/*  A preset is selected with <html data-theme="name">, dark mode with the     */
+/*  `.dark` class. To add a preset:                                            */
+/*    1. Add a light block `:root[data-theme='x']` and a dark block            */
+/*       `:root[data-theme='x'].dark` below.                                   */
+/*    2. Register it in src/core/theme/config.ts (THEME_PRESETS).              */
+/*  Only override the tokens you need; everything else falls back to the       */
+/*  neutral base tokens in globals.css.                                        */
+/* -------------------------------------------------------------------------- */
+
+/* ---- Blue ---------------------------------------------------------------- */
+:root[data-theme='blue'] {
+  --primary: oklch(0.546 0.245 262.881);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.623 0.214 259.815);
+  --accent: oklch(0.97 0.014 254.604);
+  --accent-foreground: oklch(0.379 0.146 265.522);
+}
+:root[data-theme='blue'].dark {
+  --primary: oklch(0.623 0.214 259.815);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.488 0.243 264.376);
+  --accent: oklch(0.282 0.091 267.935);
+  --accent-foreground: oklch(0.932 0.032 255.585);
+}
+
+/* ---- Green --------------------------------------------------------------- */
+:root[data-theme='green'] {
+  --primary: oklch(0.627 0.194 149.214);
+  --primary-foreground: oklch(0.982 0.018 155.826);
+  --ring: oklch(0.723 0.219 149.579);
+  --accent: oklch(0.982 0.018 155.826);
+  --accent-foreground: oklch(0.448 0.119 151.328);
+}
+:root[data-theme='green'].dark {
+  --primary: oklch(0.723 0.219 149.579);
+  --primary-foreground: oklch(0.266 0.065 152.934);
+  --ring: oklch(0.527 0.154 150.069);
+  --accent: oklch(0.266 0.065 152.934);
+  --accent-foreground: oklch(0.925 0.084 155.995);
+}
+
+/* ---- Rose ---------------------------------------------------------------- */
+:root[data-theme='rose'] {
+  --primary: oklch(0.586 0.253 17.585);
+  --primary-foreground: oklch(0.969 0.015 12.422);
+  --ring: oklch(0.645 0.246 16.439);
+  --accent: oklch(0.969 0.015 12.422);
+  --accent-foreground: oklch(0.455 0.188 13.697);
+}
+:root[data-theme='rose'].dark {
+  --primary: oklch(0.645 0.246 16.439);
+  --primary-foreground: oklch(0.969 0.015 12.422);
+  --ring: oklch(0.514 0.222 16.935);
+  --accent: oklch(0.271 0.105 12.094);
+  --accent-foreground: oklch(0.941 0.03 12.58);
+}
+
+/* ---- Orange -------------------------------------------------------------- */
+:root[data-theme='orange'] {
+  --primary: oklch(0.646 0.222 41.116);
+  --primary-foreground: oklch(0.98 0.016 73.684);
+  --ring: oklch(0.705 0.213 47.604);
+  --accent: oklch(0.98 0.016 73.684);
+  --accent-foreground: oklch(0.47 0.157 37.304);
+}
+:root[data-theme='orange'].dark {
+  --primary: oklch(0.705 0.213 47.604);
+  --primary-foreground: oklch(0.266 0.079 36.259);
+  --ring: oklch(0.553 0.195 38.402);
+  --accent: oklch(0.266 0.079 36.259);
+  --accent-foreground: oklch(0.954 0.038 75.164);
+}
+
+/* ---- Violet -------------------------------------------------------------- */
+:root[data-theme='violet'] {
+  --primary: oklch(0.541 0.281 293.009);
+  --primary-foreground: oklch(0.969 0.016 293.756);
+  --ring: oklch(0.606 0.25 292.717);
+  --accent: oklch(0.969 0.016 293.756);
+  --accent-foreground: oklch(0.432 0.232 292.759);
+}
+:root[data-theme='violet'].dark {
+  --primary: oklch(0.606 0.25 292.717);
+  --primary-foreground: oklch(0.969 0.016 293.756);
+  --ring: oklch(0.491 0.27 292.581);
+  --accent: oklch(0.283 0.141 291.089);
+  --accent-foreground: oklch(0.943 0.029 294.588);
+}
+
+/* ---- Fonts (data-font) --------------------------------------------------- */
+:root {
+  --app-font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --app-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+:root[data-font='system'] {
+  --app-font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+:root[data-font='serif'] {
+  --app-font-sans: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+:root[data-font='mono'] {
+  --app-font-sans: var(--app-font-mono);
+}
+
+/* ---- Scale (data-scale): every rem-based size follows the root size ---- */
+:root[data-scale='sm'] {
+  --app-font-size: 14px;
+}
+:root[data-scale='md'] {
+  --app-font-size: 16px;
+}
+:root[data-scale='lg'] {
+  --app-font-size: 18px;
+}

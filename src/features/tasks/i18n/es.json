@@ -1,0 +1,60 @@
+{
+  "nav": "Tareas",
+  "commands": {
+    "create": "Crear una tarea"
+  },
+  "page": {
+    "title": "Tareas",
+    "description": "Crea, sigue y completa tu trabajo."
+  },
+  "new": "Nueva tarea",
+  "edit": "Editar tarea",
+  "formDescription": "Completa los datos.",
+  "fields": {
+    "title": "Título",
+    "description": "Descripción",
+    "status": "Estado",
+    "priority": "Prioridad"
+  },
+  "status": {
+    "todo": "Pendiente",
+    "in_progress": "En curso",
+    "done": "Hecha"
+  },
+  "priority": {
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta"
+  },
+  "filters": {
+    "search": "Buscar tareas",
+    "status": "Filtrar por estado",
+    "allStatuses": "Todos los estados"
+  },
+  "table": {
+    "title": "Título",
+    "status": "Estado",
+    "priority": "Prioridad",
+    "created": "Creada",
+    "actions": "Acciones"
+  },
+  "empty": {
+    "title": "No hay tareas",
+    "description": "Crea una tarea o cambia los filtros."
+  },
+  "detail": {
+    "created": "Creada {{date}}",
+    "noDescription": "Sin descripción",
+    "notFound": "Tarea no encontrada",
+    "back": "Todas las tareas"
+  },
+  "delete": {
+    "title": "¿Eliminar la tarea?",
+    "description": "“{{title}}” se eliminará para siempre. No se puede deshacer."
+  },
+  "toast": {
+    "created": "Tarea creada",
+    "updated": "Tarea actualizada",
+    "deleted": "Tarea eliminada"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "nav": "Settings",
+  "commands": {
+    "appearance": "Customize appearance",
+    "profile": "Edit profile"
+  },
+  "page": {
+    "title": "Settings",
+    "description": "Manage your profile and preferences."
+  },
+  "tabs": {
+    "appearance": "Appearance",
+    "profile": "Profile",
+    "language": "Language"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "description": "Customize how the app looks. Changes are saved on this device.",
+    "preview": "Preview",
+    "previewTitle": "The quick brown fox",
+    "previewText": "Every component reads the same design tokens, so changes apply everywhere instantly.",
+    "previewSwitch": "Notifications"
+  },
+  "profile": {
+    "title": "Profile",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "bio": "Bio",
+    "bioHint": "Up to 280 characters.",
+    "saved": "Profile updated"
+  },
+  "language": {
+    "title": "Language",
+    "description": "Choose the language of the interface."
+  }
+}

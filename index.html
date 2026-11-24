@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Modular React starter" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>zed-react</title>
+    <!--
+      Applies the persisted theme before first paint to avoid a flash of the
+      wrong theme. Keep the storage key and attributes in sync with
+      src/core/theme/config.ts and src/core/theme/engine.ts.
+    -->
+    <script>
+      (function () {
+        try {
+          var root = document.documentElement;
+          var raw = localStorage.getItem('zed-react:theme');
+          var s = (raw && JSON.parse(raw).state) || {};
+          var mode = s.mode || 'system';
+          var dark =
+            mode === 'dark' ||
+            (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          root.classList.toggle('dark', dark);
+          root.dataset.theme = s.preset || 'neutral';
+          root.dataset.font = s.font || 'geist';
+          root.dataset.scale = s.scale || 'md';
+          if (s.radius != null) root.style.setProperty('--radius', s.radius + 'rem');
+          if (s.customPrimary) {
+            root.style.setProperty('--primary', s.customPrimary);
+            root.style.setProperty('--ring', s.customPrimary);
+          }
+        } catch (e) {
+          /* ignore: the theme will be applied once the app boots */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
